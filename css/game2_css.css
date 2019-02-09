@@ -1,0 +1,58 @@
+#maincontent{
+	border: 1px solid black;
+	width: 1000px;
+	height: 450px;
+	margin: 0 auto;
+	padding: 5px;
+}
+
+h1, p{
+	margin: 10 auto;
+	padding-left: 50px;
+}
+
+#juego{
+	border: 1px solid grey;
+	margin: 0 auto;
+	height: 320px;
+	width: 320px;
+}
+
+#controles{
+	border: 1px solid grey;
+	position: relative;
+	width: 900px;
+	margin: 0 auto;
+}
+
+#opciones{
+	border: 1px solid grey;
+	position: relative;
+	width: 900px;
+	height: 25px;
+	margin: 0 auto;
+	font-size: small;
+	color: red;
+}
+
+#opciones div{
+	color: black;
+	float: left;
+}
+
+
+.caja{
+	height: 39px;
+	width: 39px;
+	border-top: 1px dashed lightgrey;
+	border-right: 1px dashed lightgrey;
+	float: left;
+}
+
+.rojoC{
+	background-color: red;
+}
+
+.negroC{
+	background-color: black;
+}
