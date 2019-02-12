@@ -1,22 +1,11 @@
-const filamax= 7;
-const colamax= 7;
-const conecta= 4;
-
-var matriz= [];
-var fila= document.getElementsByClassName("fila");
-var turno= 0;
-var hayjuego= false;
-var haysimula= false;
-var hayganador= false;
-var llena= [colamax,colamax,colamax,colamax,colamax,colamax,colamax,colamax];
 
 function resetJuego(){
 	/*
 	Reinicializa todas las variables y matrizes globales del juego
 	*/
 	generaMatriz();
-	document.getElementById('ayuda').innerHTML= "";
-	document.getElementById('ayuda').style= "color: black;";
+	ayuda.innerHTML= "";
+	ayuda.style= "color: black;";
 	llena= [colamax,colamax,colamax,colamax,colamax,colamax,colamax,colamax];
 	turno= 0;
 	hayjuego= true;
@@ -62,7 +51,7 @@ function pulsaBoton(mifila,micola){
 		mueveFicha(mifila,micola);
 
 		/*
-		Comprueba si hay 4 fichas en línea de un mismo color
+		Comprueba si hay N fichas en línea de un mismo color
 		Si las hay, llama a la función ganarJuego(), que hace hayjuego= false
 		*/
 		compruebaVecinos(mifila,micola);
@@ -78,8 +67,8 @@ function pulsaBoton(mifila,micola){
 		Si no se ha ganado el juego, comprueba si se ha llenado el tablero
 		*/
 		if (turno==(filamax+1)*(colamax+1)){
-			document.getElementById('ayuda').innerHTML= "Se acabó el juego";
-			document.getElementById('ayuda').style= "color: red;";
+			ayuda.innerHTML= "Se acabó el juego";
+			ayuda.style= "color: red;";
 			hayjuego= false;
 		}
 	}
@@ -110,7 +99,7 @@ function caerFicha(mifila,micola){
 	if (mifila0>=0){
 		return [mifila0,micola];
 	}else{
-		document.getElementById('ayuda').innerHTML+= "Columna llena!";
+		ayuda.innerHTML+= "Columna llena!";
 		return [-1,-1];
 	}
 }
@@ -121,7 +110,7 @@ function mueveFicha(mifila,micola){
 	Si la columna está llena de fichas, no hace nada
 	*/
 	if (mifila<0 || micola<0){
-		document.getElementById('ayuda').innerHTML+= "ERROR <0";
+		ayuda.innerHTML+= "ERROR <0";
 		hayjuego= false;
 		return 0;
 	}
@@ -143,25 +132,25 @@ function mueveFicha(mifila,micola){
 		turno++;
 
 		fila[mifila].children[micola].innerHTML= matriz[mifila][micola];
-		document.getElementById('ayuda').innerHTML= "Turno: "+turno+". Jugador: "+matriz[mifila][micola]+". Fila "+mifila+", Columna "+micola;
+		ayuda.innerHTML= "Turno: "+turno+". Jugador: "+matriz[mifila][micola]+". Fila "+mifila+", Columna "+micola;
 	}else{
 
-		document.getElementById('ayuda').innerHTML= "Celda llena!";
+		ayuda.innerHTML= "Celda llena!";
 	}
 }
 
 function compruebaVecinos(yfila,xcola){
 
 	/*
-	Debe comprobar si hay 4 fichas en línea del mismo jugador
-	La ficha acabada de introducir puede estar en cualquiera de 4 posiciones
-	x000 0x000 00x0 000x -> la 1a, 2a, 3a o 4a dentro del grupo de 4 posiciones q debemos comprobar
+	Debe comprobar si hay N fichas en línea del mismo jugador
+	La ficha acabada de introducir puede estar en cualquiera de N posiciones
+	x000 0x000 00x0 000x -> la 1a, 2a, 3a o Na dentro del grupo de N posiciones q debemos comprobar
 	Sólo tiene la celda de la ficha introducida y debe asegurarse de no salirse de la matriz
 	Cuando compruebe las celdas vecinas
 	Sigue 2 pasos:
 		1. Se asegura q existan las celdas adyacentes
 		2a. Llama a la función q comprueba las fichas sean del mismo jugador
-		2b. De haber 4 en línea, internamente llama a ganarJuego()
+		2b. De haber N en línea, internamente llama a ganarJuego()
 	Con las booleanas hayjuego y hayganador, se evita hacer cálculos en vano
 	*/
 
@@ -176,26 +165,26 @@ function compruebaVecinos(yfila,xcola){
 		*/
 
 		/*
-		paso1: x000 -> desde columna hasta columna+3
-		paso2: 0x00 -> desde columna-1 hasta columna+2
-		paso3: 00x0 -> desde columna-2 hasta columna+1
-		paso4: 000x -> desde columna-3 hasta columna
+			x000 -> desde columna-0 hasta columna+N
 		*/
 
-		paso1= (xcola-0>=0)&&(xcola+3<=colamax);
-		paso2= (xcola-1>=0)&&(xcola+2<=colamax);
-		paso3= (xcola-2>=0)&&(xcola+1<=colamax);
-		paso4= (xcola-3>=0)&&(xcola+0<=colamax);
+		var i=0;
+		var j=conecta-1;
+		var paso;
 
-		if (paso1&&!hayganador){ comprueba4(yfila, yfila, xcola-0, xcola+3,1);}
-		if (paso2&&!hayganador){ comprueba4(yfila, yfila, xcola-1, xcola+2,1);}
-		if (paso3&&!hayganador){ comprueba4(yfila, yfila, xcola-2, xcola+1,1);}
-		if (paso4&&!hayganador){ comprueba4(yfila, yfila, xcola-3, xcola+0,1);}
+		while(i<conecta){
+			paso = (xcola-i>=0)&&(xcola+j<=colamax);
+			if (paso && !hayganador){
+				comprueba(yfila, yfila, xcola-i, xcola+j,1);
+			}
+			i++;
+			j--;
+		}
 	}
 
 	/* Vertical */
 
-	if (hayjuego){
+	if (hayjuego&&!hayganador){
 
 		/*
 		Debe comprobar q no esté cerca de los bordes y se salga de la matriz
@@ -206,16 +195,16 @@ function compruebaVecinos(yfila,xcola){
 		Como las columnas, pero variando en filas
 		*/
 
-		var paso1= (yfila-0>=0)&&(yfila+3<=filamax);
-		var paso2= (yfila-1>=0)&&(yfila+2<=filamax);
-		var paso3= (yfila-2>=0)&&(yfila+1<=filamax);
-		var paso4= (yfila-3>=0)&&(yfila+0<=filamax);
-
-
-		if (paso1&&!hayganador){ comprueba4(yfila-0, yfila+3, xcola, xcola,1);}
-		if (paso2&&!hayganador){ comprueba4(yfila-1, yfila+2, xcola, xcola,1);}
-		if (paso3&&!hayganador){ comprueba4(yfila-2, yfila+1, xcola, xcola,1);}
-		if (paso4&&!hayganador){ comprueba4(yfila-3, yfila+0, xcola, xcola,1);}
+		i=0;
+		j=conecta-1;
+		while(i<conecta){
+			paso = (yfila-i>=0)&&(yfila+j<=filamax);
+			if (paso && !hayganador){
+				comprueba(yfila-i, yfila+j, xcola, xcola,1);
+			}
+			i++;
+			j--;
+		}
 	}
 
 	/* Diagonal \ */
@@ -228,33 +217,22 @@ function compruebaVecinos(yfila,xcola){
 		*/
 
 		/*
-		paso1:	x--- 	debe avanzar en fila ↓ y en columna →
-				-0-- 	desde fila hasta fila+3
-				--0- 	desde columna hasta columna+3
-				---0 	
-		paso2:	0--- 	debe avanzar en fila ↓ y en columna →
-				-x-- 	desde fila-1 hasta fila+2
-				--0- 	desde columna-1 hasta columna+2
-				---0 	
-		paso3:	0--- 	debe avanzar en fila ↓ y en columna →
-				-0-- 	desde fila-2 hasta fila+1
-				--x- 	desde columna-2 hasta columna+1
-				---0 	
-		paso4:	0--- 	debe avanzar en fila ↓ y en columna →
-				-0-- 	desde fila-3 hasta fila
-				--0- 	desde columna-3 hasta columna
-				---x 	
+			x--- 	debe avanzar en fila ↓ y en columna →
+			-0-- 	desde fila-0 hasta fila+N
+			--0- 	desde columna+0 hasta columna+N
+			---0 	
 		*/
 
-		paso1= (yfila-0>=0)&&(yfila+3<=filamax)&&(xcola-0>=0)&&(xcola+3<=colamax);
-		paso2= (yfila-1>=0)&&(yfila+2<=filamax)&&(xcola-1>=0)&&(xcola+2<=colamax);
-		paso3= (yfila-2>=0)&&(yfila+1<=filamax)&&(xcola-2>=0)&&(xcola+1<=colamax);
-		paso4= (yfila-3>=0)&&(yfila+0<=filamax)&&(xcola-3>=0)&&(xcola+0<=colamax);
-
-		if (paso1&&!hayganador){ comprueba4(yfila+0, yfila+3, xcola-0, xcola+3,1);}
-		if (paso2&&!hayganador){ comprueba4(yfila-1, yfila+2, xcola-1, xcola+2,1);}
-		if (paso3&&!hayganador){ comprueba4(yfila-2, yfila+1, xcola-2, xcola+1,1);}
-		if (paso4&&!hayganador){ comprueba4(yfila-3, yfila+0, xcola-3, xcola+0,1);}
+		i=0;
+		j=conecta-1;
+		while(i<conecta){
+			paso = (yfila-i>=0)&&(yfila+j<=filamax)&&(xcola-i>=0)&&(xcola+j<=colamax);
+			if (paso && !hayganador){
+				comprueba(yfila-i, yfila+j, xcola-i, xcola+j,1);
+			}
+			i++;
+			j--;
+		}
 	}
 
 	/* Diagonal / */
@@ -264,37 +242,26 @@ function compruebaVecinos(yfila,xcola){
 		/*
 		Debe comprobar q no esté cerca de los bordes y se salga de la matriz
 		Esta diagonal es diferente del resto de casos xq ascendemos en las filas
-		Debe restar a la fila conforme avanza en el grupo de 4 celdas adyacentes
+		Debe restar a la fila conforme avanza en el grupo de N celdas adyacentes
 		*/
 
 		/*
-		paso1:	---0 	debe retroceder en fila ↑ y avanzar en columna →
-				--0- 	desde fila hasta fila-3
-				-0-- 	desde columna hasta columna+3
-				x--- 	
-		paso2:	---0 	debe retroceder en fila ↑ y avanzar en columna →
-				--0- 	desde fila+1 hasta fila-2
-				-x-- 	desde columna-1 hasta columna+2
-				0--- 	
-		paso3:	---0 	debe retroceder en fila ↑ y avanzar en columna →
-				--x- 	desde fila+2 hasta fila-1
-				-0-- 	desde columna-2 hasta columna+1
-				0--- 	
-		paso4:	---x 	debe retroceder en fila ↑ y avanzar en columna →
-				--0- 	desde fila+3 hasta fila
-				-0-- 	desde columna-3 hasta columna
-				0--- 	
+			---0 	debe retroceder en fila ↑ y avanzar en columna →
+			--0- 	desde fila+0 hasta fila-N
+			-0-- 	desde columna-0 hasta columna+N
+			x--- 	
 		*/
 
-		paso1= (yfila+0<=filamax)&&(yfila-3>=0)&&(xcola-0>=0)&&(xcola+3<=colamax);
-		paso2= (yfila+1<=filamax)&&(yfila-2>=0)&&(xcola-1>=0)&&(xcola+2<=colamax);
-		paso3= (yfila+2<=filamax)&&(yfila-1>=0)&&(xcola-2>=0)&&(xcola+1<=colamax);
-		paso4= (yfila+3<=filamax)&&(yfila-0>=0)&&(xcola-3>=0)&&(xcola+0<=colamax);
-
-		if (paso1&&!hayganador){ comprueba4(yfila+0, yfila-3, xcola-0, xcola+3,0);}
-		if (paso2&&!hayganador){ comprueba4(yfila+1, yfila-2, xcola-1, xcola+2,0);}
-		if (paso3&&!hayganador){ comprueba4(yfila+2, yfila-1, xcola-2, xcola+1,0);}
-		if (paso4&&!hayganador){ comprueba4(yfila+3, yfila-0, xcola-3, xcola+0,0);}
+		i=0;
+		j=conecta-1;
+		while(i<conecta){
+			paso = (yfila+i<=filamax)&&(yfila-j>=0)&&(xcola-i>=0)&&(xcola+j<=colamax);
+			if (paso && !hayganador){
+				comprueba(yfila+i, yfila-j, xcola-i, xcola+j,0);
+			}
+			i++;
+			j--;
+		}
 	}
 
 	/*
@@ -302,12 +269,12 @@ function compruebaVecinos(yfila,xcola){
 	*/
 }
 
-function comprueba4(f1,f2,c1,c2,opcion){
+function comprueba(f1,f2,c1,c2,opcion){
 
 	/*
-	Recoge los valores de la matriz para las 4 celdas adyacentes
+	Recoge los valores de la matriz para las N celdas adyacentes
 	Para la 2a diagonal, el contador debe disminuir en las filas
-	Comprueba si las 4 celdas están ocupadas por el mismo jugador
+	Comprueba si las N celdas están ocupadas por el mismo jugador
 	Si la IA está haciendo simulaciones de la jugada, no llama ganarJuego()
 	*/
 
@@ -325,7 +292,17 @@ function comprueba4(f1,f2,c1,c2,opcion){
 		i++;
 	}
 
-	if ((celda[0]== celda[1]) && (celda[1]== celda[2]) && (celda[2]== celda[3]) && (celda[3]== celda[0])){
+	i=0;
+	var c=0;
+	while(i<conecta-1){
+
+		if (celda[i]==celda[i+1]){
+			c++;
+		}
+		i++;
+	}
+
+	if (c==conecta-1){
 		if (!haysimula){
 			ganarJuego();
 		}
@@ -345,7 +322,7 @@ function turnoIA(){
 	Aquí debe simular una jugada propia y anticipar la siguiente jugada del adversario, y elegir la opción mejor/menos mala
 	*/
 
-	document.getElementById('ayuda').innerHTML+= "<br>No te flipes!!";
+	ayuda.innerHTML+= "<br>No te flipes!!";
 
 	haysimula= true;
 	var columna;
@@ -452,7 +429,7 @@ function buscaIA(opcion){
 			}else{
 				/*
 				Si está en 1. ganar la partida o 2. bloquear el adversario
-				Comprueba si hay 4 fichas en línea de un mismo color
+				Comprueba si hay N fichas en línea de un mismo color
 				Si las hay, llama a la función ganarJuego(), que hace hayganador= true
 				Que hará no volver a entrar al bucle
 				*/
@@ -463,7 +440,7 @@ function buscaIA(opcion){
 				matriz[mifila][micola]= 0;
 			}
 		}else{
-			document.getElementById('ayuda').innerHTML= "Columna llena!";
+			ayuda.innerHTML= "Columna llena!";
 		}
 
 		/*
@@ -515,8 +492,8 @@ function iniciaIA(){
 	if (hayjuego){
 
 		if (turno==(filamax+1)*(colamax+1)){
-			document.getElementById('ayuda').innerHTML= "Se acabó el juego";
-			document.getElementById('ayuda').style= "color: red;";
+			ayuda.innerHTML= "Se acabó el juego";
+			ayuda.style= "color: red;";
 			hayjuego= false;
 		}
 
@@ -529,13 +506,13 @@ function iniciaIA(){
 function ganarJuego(){
 
 	/*
-	Cuando se detectan 4 fichas en línea del mismo jugador
+	Cuando se detectan N fichas en línea del mismo jugador
 	Modifica las variables booleanas globales para acabar el juego
 	*/
 
 	var juga= ((turno-1)%2==0) ? "1" : "2";
-	document.getElementById('ayuda').innerHTML= "Ha ganado el jugador "+juga;
-	document.getElementById('ayuda').style= "color: red;";
+	ayuda.innerHTML= "Ha ganado el jugador "+juga;
+	ayuda.style= "color: red;";
 	hayjuego= false;
 	hayganador= true;
 }
