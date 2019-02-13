@@ -1,6 +1,6 @@
 const filamax= 7;
 const colamax= 7;
-const conecta= 5;
+const conecta= 4;
 
 var matriz= [];
 var turno= 0;

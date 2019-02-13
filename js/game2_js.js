@@ -4,8 +4,7 @@ function resetJuego(){
 	Reinicializa todas las variables y matrizes globales del juego
 	*/
 	generaMatriz();
-	ayuda.innerHTML= "";
-	ayuda.style= "color: black;";
+	ayuda.text("").css("color","black");
 	llena= [colamax,colamax,colamax,colamax,colamax,colamax,colamax,colamax];
 	turno= 0;
 	hayjuego= true;
@@ -59,7 +58,7 @@ function pulsaBoton(mifila,micola){
 		/*
 		Si está jugando contra la máquina, inicia el turno de la IA
 		*/
-		if (document.getElementById('opcion1').checked && hayjuego){
+		if ($('#opcion1').is(':checked') && hayjuego){
 			setTimeout(turnoIA, 250);
 		}
 
@@ -67,8 +66,7 @@ function pulsaBoton(mifila,micola){
 		Si no se ha ganado el juego, comprueba si se ha llenado el tablero
 		*/
 		if (turno==(filamax+1)*(colamax+1)){
-			ayuda.innerHTML= "Se acabó el juego";
-			ayuda.style= "color: red;";
+			ayuda.text("Se acabó el juego").css("color","red");
 			hayjuego= false;
 		}
 	}
@@ -99,7 +97,7 @@ function caerFicha(mifila,micola){
 	if (mifila0>=0){
 		return [mifila0,micola];
 	}else{
-		ayuda.innerHTML+= "Columna llena!";
+		ayuda.text("Columna llena!");
 		return [-1,-1];
 	}
 }
@@ -110,7 +108,7 @@ function mueveFicha(mifila,micola){
 	Si la columna está llena de fichas, no hace nada
 	*/
 	if (mifila<0 || micola<0){
-		ayuda.innerHTML+= "ERROR <0";
+		ayuda.text("ERROR <0");
 		hayjuego= false;
 		return 0;
 	}
@@ -132,10 +130,10 @@ function mueveFicha(mifila,micola){
 		turno++;
 
 		fila[mifila].children[micola].innerHTML= matriz[mifila][micola];
-		ayuda.innerHTML= "Turno: "+turno+". Jugador: "+matriz[mifila][micola]+". Fila "+mifila+", Columna "+micola;
+		ayuda.text("Turno: "+turno+". Jugador: "+matriz[mifila][micola]+". Fila "+mifila+", Columna "+micola);
 	}else{
 
-		ayuda.innerHTML= "Celda llena!";
+		ayuda.text("Celda llena!");
 	}
 }
 
@@ -322,7 +320,7 @@ function turnoIA(){
 	Aquí debe simular una jugada propia y anticipar la siguiente jugada del adversario, y elegir la opción mejor/menos mala
 	*/
 
-	ayuda.innerHTML+= "<br>No te flipes!!";
+	ayuda.text("<br>No te flipes!!");
 
 	haysimula= true;
 	var columna;
@@ -440,7 +438,7 @@ function buscaIA(opcion){
 				matriz[mifila][micola]= 0;
 			}
 		}else{
-			ayuda.innerHTML= "Columna llena!";
+			ayuda.text("Columna llena!");
 		}
 
 		/*
@@ -492,8 +490,7 @@ function iniciaIA(){
 	if (hayjuego){
 
 		if (turno==(filamax+1)*(colamax+1)){
-			ayuda.innerHTML= "Se acabó el juego";
-			ayuda.style= "color: red;";
+			ayuda.text("Se acabó el juego").css("color","red");
 			hayjuego= false;
 		}
 
@@ -511,8 +508,7 @@ function ganarJuego(){
 	*/
 
 	var juga= ((turno-1)%2==0) ? "1" : "2";
-	ayuda.innerHTML= "Ha ganado el jugador "+juga;
-	ayuda.style= "color: red;";
+	ayuda.text("Ha ganado el jugador "+juga).css("color","red");
 	hayjuego= false;
 	hayganador= true;
 }
