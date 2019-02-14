@@ -14,7 +14,7 @@ h1, p{
 #juego{
 	border: 1px solid grey;
 	margin: 0 auto;
-	height: 320px;
+	height: 360px;
 	width: 320px;
 }
 
@@ -55,4 +55,12 @@ h1, p{
 
 .negroC{
 	background-color: black;
+}
+
+.boton{
+	background-color: blue;
+	height: 36px;
+	width: 36px;
+	border: 2px solid lightblue;
+	float: left;
 }

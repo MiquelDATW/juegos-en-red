@@ -5,25 +5,19 @@ function resetJuego(){
 	*/
 	generaMatriz();
 	ayuda.text("").css("color","black");
-	llena= [colamax,colamax,colamax,colamax,colamax,colamax,colamax,colamax];
+
+	llena.forEach(function (value, index){
+		llena[index]=colamax-1;
+	})
 	turno= 0;
 	hayjuego= true;
 	hayganador= false;
-	var i=0;
-	var j=0;
 
-	while (i<=filamax){
-		j=0;
-		while (j<=colamax){
-			fila[i].children[j].className= "caja";
-			fila[i].children[j].innerHTML= "";
-			j++;
-		}
-		i++;
-	}
+	fila.children().removeClass().addClass("caja").text("");
 }
 
-function pulsaBoton(mifila,micola){
+
+function pulsaBoton(micola){
 	/*
 	Lee la jugada del usuario
 	*/
@@ -32,7 +26,7 @@ function pulsaBoton(mifila,micola){
 		/*
 		Hace caer la ficha del usuario hasta la fila más baja posible
 		*/
-		var aux= caerFicha(mifila,micola);
+		var aux= caerFicha(micola);
 		mifila= aux[0];
 		micola= aux[1];
 
@@ -65,14 +59,14 @@ function pulsaBoton(mifila,micola){
 		/*
 		Si no se ha ganado el juego, comprueba si se ha llenado el tablero
 		*/
-		if (turno==(filamax+1)*(colamax+1)){
+		if (turno==(filamax)*(colamax)){
 			ayuda.text("Se acabó el juego").css("color","red");
 			hayjuego= false;
 		}
 	}
 }
 
-function caerFicha(mifila,micola){
+function caerFicha(micola){
 
 	/*
 	Hace caer la ficha del usuario hasta la fila más baja posible
@@ -123,13 +117,13 @@ function mueveFicha(mifila,micola){
 		matriz[mifila][micola]= (turno%2==0) ? 1 : 2;
 
 		if (turno%2==0){
-			fila[mifila].children[micola].className= "caja rojoC";
+			$(fila[mifila].children[micola]).removeClass().addClass("caja rojoC");
 		}else{
-			fila[mifila].children[micola].className= "caja negroC";
+			$(fila[mifila].children[micola]).removeClass().addClass("caja negroC");
 		}
 		turno++;
 
-		fila[mifila].children[micola].innerHTML= matriz[mifila][micola];
+		$(fila[mifila].children[micola]).text(matriz[mifila][micola]);
 		ayuda.text("Turno: "+turno+". Jugador: "+matriz[mifila][micola]+". Fila "+mifila+", Columna "+micola);
 	}else{
 
@@ -152,6 +146,7 @@ function compruebaVecinos(yfila,xcola){
 	Con las booleanas hayjuego y hayganador, se evita hacer cálculos en vano
 	*/
 
+	var i, j, paso;
 
 	/* Horizontal */
 
@@ -166,12 +161,11 @@ function compruebaVecinos(yfila,xcola){
 			x000 -> desde columna-0 hasta columna+N
 		*/
 
-		var i=0;
-		var j=conecta-1;
-		var paso;
+		i=0;
+		j=conecta-1;
 
 		while(i<conecta){
-			paso = (xcola-i>=0)&&(xcola+j<=colamax);
+			paso = (xcola-i>=0)&&(xcola+j<colamax);
 			if (paso && !hayganador){
 				comprueba(yfila, yfila, xcola-i, xcola+j,1);
 			}
@@ -196,7 +190,7 @@ function compruebaVecinos(yfila,xcola){
 		i=0;
 		j=conecta-1;
 		while(i<conecta){
-			paso = (yfila-i>=0)&&(yfila+j<=filamax);
+			paso = (yfila-i>=0)&&(yfila+j<filamax);
 			if (paso && !hayganador){
 				comprueba(yfila-i, yfila+j, xcola, xcola,1);
 			}
@@ -224,7 +218,7 @@ function compruebaVecinos(yfila,xcola){
 		i=0;
 		j=conecta-1;
 		while(i<conecta){
-			paso = (yfila-i>=0)&&(yfila+j<=filamax)&&(xcola-i>=0)&&(xcola+j<=colamax);
+			paso = (yfila-i>=0)&&(yfila+j<filamax)&&(xcola-i>=0)&&(xcola+j<colamax);
 			if (paso && !hayganador){
 				comprueba(yfila-i, yfila+j, xcola-i, xcola+j,1);
 			}
@@ -253,7 +247,7 @@ function compruebaVecinos(yfila,xcola){
 		i=0;
 		j=conecta-1;
 		while(i<conecta){
-			paso = (yfila+i<=filamax)&&(yfila-j>=0)&&(xcola-i>=0)&&(xcola+j<=colamax);
+			paso = (yfila+i<filamax)&&(yfila-j>=0)&&(xcola-i>=0)&&(xcola+j<colamax);
 			if (paso && !hayganador){
 				comprueba(yfila+i, yfila-j, xcola-i, xcola+j,0);
 			}
@@ -379,18 +373,18 @@ function buscaIA(opcion){
 	Recorre las 8 columnas hasta q encuentre la columna q gana/bloquea
 	O hasta q haya acabado de el bucle
 	*/
-	while (i<=colamax && !hayganador){
+	while (i<colamax && !hayganador){
 
 		/*
 		Si va a simular la mejor jugada, usa el vector aleatorio, sino recorre las columnas de 0 a 7
 		*/
 		a= (opcion=="simula") ? v[i] : i;
-		a= (opcion=="random") ? Math.floor(Math.random()*colamax) : a;
+		a= (opcion=="random") ? Math.floor(Math.random()*(colamax+1)) : a;
 
 		/*
 		Hace caer la ficha del usuario hasta la fila más baja posible
 		*/
-		aux= caerFicha(0,a);
+		aux= caerFicha(a);
 		mifila= aux[0];
 		micola= aux[1];
 
@@ -471,7 +465,7 @@ function juegaIA(columna,opcion){
 
 	hayganador= false;
 	console.log("IA "+opcion);
-	aux= caerFicha(0,columna);
+	aux= caerFicha(columna);
 	mifila= aux[0];
 	micola= aux[1];
 	mueveFicha(mifila,micola);
@@ -489,7 +483,7 @@ function iniciaIA(){
 
 	if (hayjuego){
 
-		if (turno==(filamax+1)*(colamax+1)){
+		if (turno==(filamax)*(colamax)){
 			ayuda.text("Se acabó el juego").css("color","red");
 			hayjuego= false;
 		}
@@ -522,10 +516,10 @@ function generaMatriz(){
 	var i=0;
 	var j=0;
 
-	while(i<=filamax){
+	while(i<filamax){
 		matriz[i]= [];
 		j=0;
-		while(j<=colamax){
+		while(j<colamax){
 
 			matriz[i][j]= 0;
 			j++;
@@ -550,13 +544,13 @@ function generaVector(){
 	var a, b;
 
 	i=0;
-	while (i<=colamax){
+	while (i<colamax){
 		v[i]=i;
 		i++;
 	}
 	i=0;
-	while (i<=colamax){
-		a= Math.floor(Math.random()*colamax);
+	while (i<colamax){
+		a= Math.floor(Math.random()*(colamax+1));
 		b= v[i];
 		v[i]= v[a];
 		v[a]= b;
