@@ -1,4 +1,6 @@
 
+/* PARTIDA */
+
 function resetJuego(){
 	/*
 	Reinicializa todas las variables y matrizes globales del juego
@@ -16,55 +18,46 @@ function resetJuego(){
 	fila.children().removeClass().addClass("caja").text("");
 }
 
+function generaMatriz(){
 
-function pulsaBoton(micola){
 	/*
-	Lee la jugada del usuario
+	Genera la matriz q guardará la ficha de cada jugador
 	*/
-	if (hayjuego){
 
-		/*
-		Hace caer la ficha del usuario hasta la fila más baja posible
-		*/
-		var aux= caerFicha(micola);
-		mifila= aux[0];
-		micola= aux[1];
+	var i=0;
+	var j=0;
 
-		/*
-		Si recoge -1, quiere decir q la columna está llena
-		Por tanto, sale de la función y no hace nada
-		*/
-		if ((mifila==micola) && (mifila==-1)){
-			return -1;
+	while(i<filamax){
+		matriz[i]= [];
+		j=0;
+		while(j<colamax){
+
+			matriz[i][j]= 0;
+			j++;
 		}
+		i++;
 
-		/*
-		Pinta la jugada, actualiza la matriz de jugadas y avanza el turno
-		*/
-		mueveFicha(mifila,micola);
-
-		/*
-		Comprueba si hay N fichas en línea de un mismo color
-		Si las hay, llama a la función ganarJuego(), que hace hayjuego= false
-		*/
-		compruebaVecinos(mifila,micola);
-
-		/*
-		Si está jugando contra la máquina, inicia el turno de la IA
-		*/
-		if ($('#opcion1').is(':checked') && hayjuego){
-			setTimeout(turnoIA, 250);
-		}
-
-		/*
-		Si no se ha ganado el juego, comprueba si se ha llenado el tablero
-		*/
-		if (turno==(filamax)*(colamax)){
-			ayuda.text("Se acabó el juego").css("color","red");
-			hayjuego= false;
-		}
 	}
+
+	hayjuego= true;
+	//console.log(matriz);
 }
+
+function ganarJuego(){
+
+	/*
+	Cuando se detectan N fichas en línea del mismo jugador
+	Modifica las variables booleanas globales para acabar el juego
+	*/
+
+	var juga= ((turno-1)%2==0) ? "1" : "2";
+	ayuda.text("Ha ganado el jugador "+juga).css("color","red");
+	hayjuego= false;
+	hayganador= true;
+}
+
+/* TABLERO */
+
 
 function caerFicha(micola){
 
@@ -302,6 +295,57 @@ function comprueba(f1,f2,c1,c2,opcion){
 	}
 }
 
+/* JUGADOR */
+
+function pulsaBoton(micola){
+	/*
+	Lee la jugada del usuario
+	*/
+	if (hayjuego){
+
+		/*
+		Hace caer la ficha del usuario hasta la fila más baja posible
+		*/
+		var aux= caerFicha(micola);
+		mifila= aux[0];
+		micola= aux[1];
+
+		/*
+		Si recoge -1, quiere decir q la columna está llena
+		Por tanto, sale de la función y no hace nada
+		*/
+		if ((mifila==micola) && (mifila==-1)){
+			return -1;
+		}
+
+		/*
+		Pinta la jugada, actualiza la matriz de jugadas y avanza el turno
+		*/
+		mueveFicha(mifila,micola);
+
+		/*
+		Comprueba si hay N fichas en línea de un mismo color
+		Si las hay, llama a la función ganarJuego(), que hace hayjuego= false
+		*/
+		compruebaVecinos(mifila,micola);
+
+		/*
+		Si está jugando contra la máquina, inicia el turno de la IA
+		*/
+		if ($('#opcion1').is(':checked') && hayjuego){
+			setTimeout(turnoIA, 250);
+		}
+
+		/*
+		Si no se ha ganado el juego, comprueba si se ha llenado el tablero
+		*/
+		if (turno==(filamax)*(colamax)){
+			ayuda.text("Se acabó el juego").css("color","red");
+			hayjuego= false;
+		}
+	}
+}
+
 function turnoIA(){
 
 	/*
@@ -379,7 +423,7 @@ function buscaIA(opcion){
 		Si va a simular la mejor jugada, usa el vector aleatorio, sino recorre las columnas de 0 a 7
 		*/
 		a= (opcion=="simula") ? v[i] : i;
-		a= (opcion=="random") ? Math.floor(Math.random()*(colamax+1)) : a;
+		a= (opcion=="random") ? generaNumeroAleatorio(colamax) : a;
 
 		/*
 		Hace caer la ficha del usuario hasta la fila más baja posible
@@ -494,44 +538,6 @@ function iniciaIA(){
 	}
 }
 
-function ganarJuego(){
-
-	/*
-	Cuando se detectan N fichas en línea del mismo jugador
-	Modifica las variables booleanas globales para acabar el juego
-	*/
-
-	var juga= ((turno-1)%2==0) ? "1" : "2";
-	ayuda.text("Ha ganado el jugador "+juga).css("color","red");
-	hayjuego= false;
-	hayganador= true;
-}
-
-function generaMatriz(){
-
-	/*
-	Genera la matriz q guardará la ficha de cada jugador
-	*/
-
-	var i=0;
-	var j=0;
-
-	while(i<filamax){
-		matriz[i]= [];
-		j=0;
-		while(j<colamax){
-
-			matriz[i][j]= 0;
-			j++;
-		}
-		i++;
-
-	}
-
-	hayjuego= true;
-	//console.log(matriz);
-}
-
 function generaVector(){
 
 	/*
@@ -549,13 +555,20 @@ function generaVector(){
 		i++;
 	}
 	i=0;
+	console.log(v);
 	while (i<colamax){
-		a= Math.floor(Math.random()*(colamax+1));
+		a= generaNumeroAleatorio(colamax);
 		b= v[i];
 		v[i]= v[a];
 		v[a]= b;
 		i++;
 	}
+	console.log(v);
 
 	return v;
+}
+
+function generaNumeroAleatorio(numero){
+
+	return Math.floor(Math.random()*(numero))
 }
