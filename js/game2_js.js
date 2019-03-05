@@ -14,18 +14,8 @@ function resetJuego(){
 		llena[i]=COLAMAX-1;
 		i++;
 	}
-	/*
-	llena.forEach(function (value, index){
-		llena[index]=COLAMAX-1;
-	})
-	*/
 
 	fila.children().removeClass().addClass("caja").text("");
-
-	//$(document).on('click','.boton',cosa);
-	//$(document).on('click','.boton',pulsaBoton($(this).attr('col')));
-	//$(document).on('click','.boton',pulsaBoton());
-	//$(document).on('click','.boton',cosa);
 
 	comenzarJuego();
 }
@@ -99,7 +89,6 @@ function ganarJuego(){
 	hayjuego= false;
 	hayganador= true;
 	$('#b1').text("Comenzar juego");
-	//$(document).off('click','.boton',cosa);
 }
 
 /* TABLERO */
@@ -346,15 +335,12 @@ function comprueba(f1,f2,c1,c2,opcion){
 
 function pulsaBoton(micola){
 
-	//var micola = $(this).attr('col');
 	/*
 	Lee la jugada del usuario
 	*/
 	if (hayjuego && jugador==1){
 
 		turno++;
-
-		//$('.boton').
 
 		/*
 		Hace caer la ficha del usuario hasta la fila más baja posible
