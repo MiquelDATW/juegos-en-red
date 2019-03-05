@@ -58,23 +58,7 @@ function generaMatriz(){
 
 function copiaMatriz(original){
 
-	var i=0;
-	var j=0;
-	var copia = [];
-
-	while(i<FILAMAX){
-		copia[i]= [];
-		j=0;
-		while(j<COLAMAX){
-
-			copia[i][j]= original[i][j];
-			j++;
-		}
-		i++;
-
-	}
-
-	return copia;
+	return $.extend(true, [], original);
 }
 
 function ganarJuego(){
@@ -93,12 +77,10 @@ function ganarJuego(){
 
 /* TABLERO */
 
-
 function caerFicha(micola){
 
 	/*
 	Hace caer la ficha del usuario hasta la fila más baja posible
-	(realmente sólo nos interesa qué columna ha pulsado)
 	*/
 
 	/*
@@ -351,7 +333,7 @@ function pulsaBoton(micola){
 		Si recoge -1, quiere decir q la columna está llena
 		Por tanto, sale de la función y no hace nada
 		*/
-		if ((mifila==micola) && (mifila==-1)){
+		if (mifila==-1){
 			return -1;
 		}
 
@@ -360,13 +342,15 @@ function pulsaBoton(micola){
 		*/
 		var ficha = mueveFicha(mifila,micola);
 
+		if (ficha!=1){
+			return -1;
+		}
+
 		/*
 		Comprueba si hay N fichas en línea de un mismo color
 		Si las hay, llama a la función ganarJuego(), que hace hayjuego= false
 		*/
-		if (ficha==1){
-			compruebaVecinos(mifila,micola);
-		}
+		compruebaVecinos(mifila,micola);
 
 		jugador=2;
 		turno++;
@@ -405,7 +389,8 @@ function turnoIA(){
 	haysimula= true;
 	var columna;
 
-	columna= buscaIA("wins");
+	//columna= buscaIA("wins");
+	columna= winnerIA();
 	if (hayganador){
 
 		haysimula= false;
@@ -429,6 +414,43 @@ function turnoIA(){
 	//juegaIA(columna,"random");
 	jugador=1;
 }
+
+function winnerIA(){
+
+	var matriz2 = [];
+	var llena2 = [];
+	var f,ficha;
+	var v=generaVector();
+	var i=0;
+
+	while (i<COLAMAX){
+
+		matriz2 = copiaMatriz(matriz);
+		llena2 = copiaMatriz(llena);
+
+		f = caerFicha2(v[i],llena2);
+		if (f==-1){
+			i++;
+			continue;
+		}
+		ficha = mueveFicha2(f,v[i],matriz2);
+
+		if (ficha!=1){
+			i++;
+			continue;
+		}
+
+		compruebaVecinos2(f,v[i],matriz2);
+
+		if (hayganador){
+			break;
+		}
+		i++;
+	}
+	return v[i];
+}
+
+
 
 function buscaIA(opcion){
 
@@ -488,7 +510,12 @@ function buscaIA(opcion){
 			Este código es reciclado de mueveFicha(), pero no llamamos la función xq hace muchas más cosas
 			Que no nos interesan xq estamos simulando jugadas
 			*/
-			matriz[mifila][micola]= jugador;
+			if (opcion="blocks"){
+				matriz[mifila][micola]= 1;
+			}else{
+				matriz[mifila][micola]=2;
+			}
+			//matriz[mifila][micola]= jugador;
 			/*
 			TODO: aún no funciona
 			*/
@@ -536,7 +563,7 @@ function buscaIA(opcion){
 
 	/*
 	Devuelve la columna ganadora, pero ha sido incrementada en la última línea del bucle
-	La decrementa para q devolcer la verdadera columna ganadora
+	La decrementa para devolver la verdadera columna ganadora
 	*/
 	return --i;
 }
@@ -608,4 +635,131 @@ function generaVector(){
 function generaNumeroAleatorio(numero){
 
 	return Math.floor(Math.random()*(numero))
+}
+
+
+
+
+
+function caerFicha2(micola,aux){
+
+	var mifila0= aux[micola];
+	if (!haysimula){
+		aux[micola]--;
+	}
+	if (mifila0>=0){
+		return mifila0;
+	}else{
+		ayuda.text("Columna llena!");
+		return -1;
+	}
+}
+
+function mueveFicha2(mifila,micola,aux){
+
+	if (mifila<0 || micola<0){
+		ayuda.text("ERROR <0");
+		hayjuego= false;
+		return -1;
+	}
+
+	if (aux[mifila][micola]==0){
+		aux[mifila][micola]= jugador;
+		return 1;
+	}else{
+		ayuda.text("Celda llena!");
+		return 0;
+	}
+}
+
+function compruebaVecinos2(yfila,xcola,aux){
+
+	var i, j, paso;
+
+	if (hayjuego&&!hayganador){
+		i=0;
+		j=conecta-1;
+
+		while(i<conecta){
+			paso = (xcola-i>=0)&&(xcola+j<COLAMAX);
+			if (paso && !hayganador){
+				comprueba2(yfila, yfila, xcola-i, xcola+j,1,aux);
+			}
+			i++;
+			j--;
+		}
+	}
+
+	if (hayjuego&&!hayganador){
+		i=0;
+		j=conecta-1;
+		while(i<conecta){
+			paso = (yfila-i>=0)&&(yfila+j<FILAMAX);
+			if (paso && !hayganador){
+				comprueba2(yfila-i, yfila+j, xcola, xcola,1,aux);
+			}
+			i++;
+			j--;
+		}
+	}
+
+	if (hayjuego&&!hayganador){
+		i=0;
+		j=conecta-1;
+		while(i<conecta){
+			paso = (yfila-i>=0)&&(yfila+j<FILAMAX)&&(xcola-i>=0)&&(xcola+j<COLAMAX);
+			if (paso && !hayganador){
+				comprueba2(yfila-i, yfila+j, xcola-i, xcola+j,1,aux);
+			}
+			i++;
+			j--;
+		}
+	}
+
+	if (hayjuego&&!hayganador){
+		i=0;
+		j=conecta-1;
+		while(i<conecta){
+			paso = (yfila+i<FILAMAX)&&(yfila-j>=0)&&(xcola-i>=0)&&(xcola+j<COLAMAX);
+			if (paso && !hayganador){
+				comprueba2(yfila+i, yfila-j, xcola-i, xcola+j,0,aux);
+			}
+			i++;
+			j--;
+		}
+	}
+}
+
+function comprueba2(f1,f2,c1,c2,opcion,aux){
+
+	var celda= [];
+	var a= f1;
+	var b= c1;
+	var i= 0;
+
+	while (i<conecta){
+
+		celda[i]= aux[a][b];
+		b= (c1==c2) ? c1 : b+1;
+		a= (f1==f2) ? f1 : ((opcion==1) ? a+1 : a-1 );
+
+		i++;
+	}
+
+	i=0;
+	var c=0;
+	while(i<conecta-1){
+
+		if (celda[i]==celda[i+1]){
+			c++;
+		}
+		i++;
+	}
+
+	if (c==conecta-1){
+		if (!haysimula){
+			ganarJuego();
+		}
+		hayganador= true;
+	}
 }
