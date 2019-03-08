@@ -389,8 +389,8 @@ function turnoIA(){
 	haysimula= true;
 	var columna;
 
-	//columna= buscaIA("wins");
-	columna= winnerIA();
+	columna= buscaIA("wins");
+	//columna= winnerIA();
 	if (hayganador){
 
 		haysimula= false;
@@ -414,43 +414,6 @@ function turnoIA(){
 	//juegaIA(columna,"random");
 	jugador=1;
 }
-
-function winnerIA(){
-
-	var matriz2 = [];
-	var llena2 = [];
-	var f,ficha;
-	var v=generaVector();
-	var i=0;
-
-	while (i<COLAMAX){
-
-		matriz2 = copiaMatriz(matriz);
-		llena2 = copiaMatriz(llena);
-
-		f = caerFicha2(v[i],llena2);
-		if (f==-1){
-			i++;
-			continue;
-		}
-		ficha = mueveFicha2(f,v[i],matriz2);
-
-		if (ficha!=1){
-			i++;
-			continue;
-		}
-
-		compruebaVecinos2(f,v[i],matriz2);
-
-		if (hayganador){
-			break;
-		}
-		i++;
-	}
-	return v[i];
-}
-
-
 
 function buscaIA(opcion){
 
@@ -637,9 +600,42 @@ function generaNumeroAleatorio(numero){
 	return Math.floor(Math.random()*(numero))
 }
 
+/***************************************************************************/
 
+function winnerIA(){
 
+	var matriz2 = [];
+	var llena2 = [];
+	var f,ficha;
+	var v=generaVector();
+	var i=0;
 
+	while (i<COLAMAX){
+
+		matriz2 = copiaMatriz(matriz);
+		llena2 = copiaMatriz(llena);
+
+		f = caerFicha2(v[i],llena2);
+		if (f==-1){
+			i++;
+			continue;
+		}
+		ficha = mueveFicha2(f,v[i],matriz2);
+
+		if (ficha!=1){
+			i++;
+			continue;
+		}
+
+		compruebaVecinos2(f,v[i],matriz2);
+
+		if (hayganador){
+			break;
+		}
+		i++;
+	}
+	return v[i];
+}
 
 function caerFicha2(micola,aux){
 
