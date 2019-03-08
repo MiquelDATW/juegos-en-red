@@ -13,7 +13,9 @@ function resetJuego(){
 		i++;
 	}
 
-	turno= 0;
+	//turno= 0;
+	newturno= 0;
+	newjugador= JUGADOR1;
 	hayjuego= true;
 	hayganador= false;
 
@@ -59,8 +61,8 @@ function ganarJuego(){
 	Modifica las variables booleanas globales para acabar el juego
 	*/
 
-	var juga= ((turno-1)%2==0) ? "1" : "2";
-	ayuda.text("Ha ganado el jugador "+juga).css("color","red");
+	//var juga= ((turno-1)%2==0) ? "1" : "2";
+	ayuda.text("Ha ganado el jugador "+newjugador).css("color","red");
 	hayjuego= false;
 	hayganador= true;
 	$('#b1').text("Comenzar juego");
@@ -101,7 +103,7 @@ function caerFicha(micola){
 
 function mueveFicha(mifila,micola){
 
-	var juga;
+	//var juga;
 	/*
 	Si la columna está llena de fichas, no hace nada
 	*/
@@ -118,18 +120,21 @@ function mueveFicha(mifila,micola){
 	El párrafo de ayuda muestra información de: turno, jugador y celda
 	*/
 	if (matriz[mifila][micola]==0){
-		juga = (turno%2==0) ? 1 : 2;
-		matriz[mifila][micola] = juga;
+		//juga= (turno%2==0) ? 1 : 2;
+		matriz[mifila][micola] = newjugador;
+		//console.log("Turno: "+turno+"/"+newturno+" - Jugador: "+juga+"/"+newjugador);
 
-		if (turno%2==0){
+		if (newjugador==1){
 			$(fila[mifila].children[micola]).removeClass().addClass("caja rojoC");
 		}else{
-			$(fila[mifila].children[micola]).removeClass().addClass("caja negroC");
+			$(fila[mifila].children[micola]).removeClass().addClass("caja amarilloC");
 		}
-		turno++;
+		//turno++;
 
-		$(fila[mifila].children[micola]).text(juga);
-		ayuda.text("Turno: "+turno+". Jugador: "+juga+". Fila "+mifila+", Columna "+micola);
+		$(fila[mifila].children[micola]).text(newjugador);
+		//ayuda.text("Turno: "+turno+". Jugador: "+juga+". Fila "+mifila+", Columna "+micola);
+		ay1.text("Turno: "+newturno+". Jugador: "+newjugador);
+		ay2.text("Turno: "+(newturno+1)+". Jugador: "+(newjugador == 1 ? 2 : 1));
 		return 1;
 	}else{
 
@@ -169,9 +174,9 @@ function compruebaVecinos(yfila,xcola){
 		*/
 
 		i=0;
-		j=conecta-1;
+		j=CONECTA-1;
 
-		while(i<conecta){
+		while(i<CONECTA){
 			paso = (xcola-i>=0)&&(xcola+j<COLAMAX);
 			if (paso && !hayganador){
 				comprueba(yfila, yfila, xcola-i, xcola+j,1);
@@ -195,8 +200,8 @@ function compruebaVecinos(yfila,xcola){
 		*/
 
 		i=0;
-		j=conecta-1;
-		while(i<conecta){
+		j=CONECTA-1;
+		while(i<CONECTA){
 			paso = (yfila-i>=0)&&(yfila+j<FILAMAX);
 			if (paso && !hayganador){
 				comprueba(yfila-i, yfila+j, xcola, xcola,1);
@@ -223,8 +228,8 @@ function compruebaVecinos(yfila,xcola){
 		*/
 
 		i=0;
-		j=conecta-1;
-		while(i<conecta){
+		j=CONECTA-1;
+		while(i<CONECTA){
 			paso = (yfila-i>=0)&&(yfila+j<FILAMAX)&&(xcola-i>=0)&&(xcola+j<COLAMAX);
 			if (paso && !hayganador){
 				comprueba(yfila-i, yfila+j, xcola-i, xcola+j,1);
@@ -252,8 +257,8 @@ function compruebaVecinos(yfila,xcola){
 		*/
 
 		i=0;
-		j=conecta-1;
-		while(i<conecta){
+		j=CONECTA-1;
+		while(i<CONECTA){
 			paso = (yfila+i<FILAMAX)&&(yfila-j>=0)&&(xcola-i>=0)&&(xcola+j<COLAMAX);
 			if (paso && !hayganador){
 				comprueba(yfila+i, yfila-j, xcola-i, xcola+j,0);
@@ -282,7 +287,7 @@ function comprueba(f1,f2,c1,c2,opcion){
 	var b= c1;
 	var i= 0;
 
-	while (i<conecta){
+	while (i<CONECTA){
 
 		celda[i]= matriz[a][b];
 		b= (c1==c2) ? c1 : b+1;
@@ -293,7 +298,7 @@ function comprueba(f1,f2,c1,c2,opcion){
 
 	i=0;
 	var c=0;
-	while(i<conecta-1){
+	while(i<CONECTA-1){
 
 		if (celda[i]==celda[i+1]){
 			c++;
@@ -301,7 +306,7 @@ function comprueba(f1,f2,c1,c2,opcion){
 		i++;
 	}
 
-	if (c==conecta-1){
+	if (c==CONECTA-1){
 		if (!haysimula){
 			ganarJuego();
 		}
@@ -315,7 +320,7 @@ function pulsaBoton(micola){
 	/*
 	Lee la jugada del usuario
 	*/
-	if (hayjuego){
+	if (hayjuego && newjugador==JUGADOR1){
 
 		/*
 		Hace caer la ficha del usuario hasta la fila más baja posible
@@ -333,6 +338,7 @@ function pulsaBoton(micola){
 		/*
 		Pinta la jugada, actualiza la matriz de jugadas y avanza el turno
 		*/
+		newturno++;
 		var ficha = mueveFicha(mifila,micola);
 
 		/*
@@ -344,8 +350,9 @@ function pulsaBoton(micola){
 			/*
 			Si está jugando contra la máquina, inicia el turno de la IA
 			*/
+			newjugador = JUGADOR2;
 			if ($('#opcion1').is(':checked') && hayjuego){
-				setTimeout(turnoIA, 250);
+				setTimeout(turnoIA, 2500);
 			}
 		}
 
@@ -353,7 +360,7 @@ function pulsaBoton(micola){
 		/*
 		Si no se ha ganado el juego, comprueba si se ha llenado el tablero
 		*/
-		if (turno==(FILAMAX)*(COLAMAX)){
+		if (newturno==(FILAMAX)*(COLAMAX)){
 			ayuda.text("Se acabó el juego").css("color","red");
 			hayjuego= false;
 		}
@@ -372,7 +379,7 @@ function turnoIA(){
 	Aquí debe simular una jugada propia y anticipar la siguiente jugada del adversario, y elegir la opción mejor/menos mala
 	*/
 
-	ayuda.text("<br>No te flipes!!");
+	ayuda.html("<b>No te flipes!!</b>");
 
 	haysimula= true;
 	var columna;
@@ -417,7 +424,8 @@ function buscaIA(opcion){
 	Si está bloqueando la jugada ganadora del adversario
 	Disminuye el contador de turno, para simular q es el otro
 	*/
-	turno= (opcion=="blocks") ? --turno : turno;
+	//turno= (opcion=="blocks") ? --turno : turno;
+	var miturno = (opcion=="blocks") ? (newturno-1) : ((opcion=="predice") ? (newturno+1) : newturno);
 
 	/*
 	Si va a simular la mejor jugada, debe recorrer las 8 columnas
@@ -459,16 +467,18 @@ function buscaIA(opcion){
 			Este código es reciclado de mueveFicha(), pero no llamamos la función xq hace muchas más cosas
 			Que no nos interesan xq estamos simulando jugadas
 			*/
-			juga= (turno%2==0) ? 1 : 2;
+			//juga= (turno%2==0) ? 1 : 2;
+			juga= (miturno%2==0) ? 1 : 2;
 			matriz[mifila][micola] = juga;
+			//console.log("Opcion: "+opcion+". "+turno+" / "+miturno+" / "+newturno);
 			/*
 			TODO: aún no funciona
 			*/
 			if (opcion=="simula"){
-				turno++;
+				//turno++;
 				j= buscaIA("predice");
 				matriz[mifila][micola]= 0;
-				turno--;
+				//turno--;
 				if (!hayganador){
 					//console.log("IA knows nothing");
 					i= a+1;
@@ -504,7 +514,8 @@ function buscaIA(opcion){
 	Si está bloqueando la jugada ganadora del adversario
 	Vuelve a poner el contador de turno a su valor original
 	*/
-	turno= (opcion=="blocks") ? ++turno : turno;
+	//turno= (opcion=="blocks") ? ++turno : turno;
+	miturno= (opcion=="blocks") ? newturno+1 : ((opcion=="predice") ? (newturno-1) : newturno);
 
 	/*
 	Devuelve la columna ganadora, pero ha sido incrementada en la última línea del bucle
@@ -524,8 +535,11 @@ function juegaIA(micola,opcion){
 	hayganador= false;
 	console.log("IA "+opcion);
 	mifila= caerFicha(micola);
+	newturno++;
 	mueveFicha(mifila,micola);
 	compruebaVecinos(mifila,micola);
+
+	newjugador = JUGADOR1;
 }
 
 function iniciaIA(){
@@ -539,7 +553,7 @@ function iniciaIA(){
 
 	if (hayjuego){
 
-		if (turno==(FILAMAX)*(COLAMAX)){
+		if (newturno==(FILAMAX)*(COLAMAX)){
 			ayuda.text("Se acabó el juego").css("color","red");
 			hayjuego= false;
 		}
