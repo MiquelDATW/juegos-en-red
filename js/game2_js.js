@@ -13,7 +13,6 @@ function resetJuego(){
 		i++;
 	}
 
-	//turno= 0;
 	newturno= 0;
 	newjugador= JUGADOR1;
 	hayjuego= true;
@@ -61,7 +60,6 @@ function ganarJuego(){
 	Modifica las variables booleanas globales para acabar el juego
 	*/
 
-	//var juga= ((turno-1)%2==0) ? "1" : "2";
 	ayuda.text("Ha ganado el jugador "+newjugador).css("color","red");
 	hayjuego= false;
 	hayganador= true;
@@ -103,7 +101,6 @@ function caerFicha(micola){
 
 function mueveFicha(mifila,micola){
 
-	//var juga;
 	/*
 	Si la columna está llena de fichas, no hace nada
 	*/
@@ -120,19 +117,15 @@ function mueveFicha(mifila,micola){
 	El párrafo de ayuda muestra información de: turno, jugador y celda
 	*/
 	if (matriz[mifila][micola]==0){
-		//juga= (turno%2==0) ? 1 : 2;
 		matriz[mifila][micola] = newjugador;
-		//console.log("Turno: "+turno+"/"+newturno+" - Jugador: "+juga+"/"+newjugador);
 
 		if (newjugador==1){
 			$(fila[mifila].children[micola]).removeClass().addClass("caja rojoC");
 		}else{
 			$(fila[mifila].children[micola]).removeClass().addClass("caja amarilloC");
 		}
-		//turno++;
 
 		$(fila[mifila].children[micola]).text(newjugador);
-		//ayuda.text("Turno: "+turno+". Jugador: "+juga+". Fila "+mifila+", Columna "+micola);
 		ay1.text("Turno: "+newturno+". Jugador: "+newjugador);
 		ay2.text("Turno: "+(newturno+1)+". Jugador: "+(newjugador == 1 ? 2 : 1));
 		return 1;
@@ -424,7 +417,6 @@ function buscaIA(opcion){
 	Si está bloqueando la jugada ganadora del adversario
 	Disminuye el contador de turno, para simular q es el otro
 	*/
-	//turno= (opcion=="blocks") ? --turno : turno;
 	var miturno = (opcion=="blocks") ? (newturno-1) : ((opcion=="predice") ? (newturno+1) : newturno);
 
 	/*
@@ -432,7 +424,7 @@ function buscaIA(opcion){
 	Genera un vector q contenga las 8 columnas en order aleatorio, para no ir siempre desde 0 hasta 7
 	*/
 	if (opcion=="simula"){
-		var v= generaVector();
+		var v= generaVector(COLAMAX);
 	}
 
 	/*
@@ -467,18 +459,16 @@ function buscaIA(opcion){
 			Este código es reciclado de mueveFicha(), pero no llamamos la función xq hace muchas más cosas
 			Que no nos interesan xq estamos simulando jugadas
 			*/
-			//juga= (turno%2==0) ? 1 : 2;
 			juga= (miturno%2==0) ? 1 : 2;
 			matriz[mifila][micola] = juga;
-			//console.log("Opcion: "+opcion+". "+turno+" / "+miturno+" / "+newturno);
 			/*
 			TODO: aún no funciona
 			*/
 			if (opcion=="simula"){
-				//turno++;
+
 				j= buscaIA("predice");
 				matriz[mifila][micola]= 0;
-				//turno--;
+				
 				if (!hayganador){
 					//console.log("IA knows nothing");
 					i= a+1;
@@ -564,7 +554,7 @@ function iniciaIA(){
 	}
 }
 
-function generaVector(){
+function generaVector(numero){
 
 	/*
 	Genera un vector q contiene números del 0 al 7 en order aleatorio
@@ -576,13 +566,13 @@ function generaVector(){
 	var a, b;
 
 	i=0;
-	while (i<COLAMAX){
+	while (i<numero){
 		v[i]=i;
 		i++;
 	}
 	i=0;
-	while (i<COLAMAX){
-		a= generaNumeroAleatorio(COLAMAX);
+	while (i<numero){
+		a= generaNumeroAleatorio(numero);
 		b= v[i];
 		v[i]= v[a];
 		v[a]= b;

@@ -5,7 +5,6 @@ const JUGADOR1 = 1;
 const JUGADOR2 = 2;
 
 var matriz= [];
-//var turno= 0;
 var hayjuego= false;
 var haysimula= false;
 var hayganador= false;
