@@ -68,7 +68,6 @@ function ganarJuego(){
 
 /* TABLERO */
 
-
 function caerFicha(micola){
 
 	/*
@@ -345,7 +344,7 @@ function pulsaBoton(micola){
 			*/
 			newjugador = JUGADOR2;
 			if ($('#opcion1').is(':checked') && hayjuego){
-				setTimeout(turnoIA, 2500);
+				setTimeout(turnoIA, 250);
 			}
 		}
 
@@ -377,7 +376,8 @@ function turnoIA(){
 	haysimula= true;
 	var columna;
 
-	columna= buscaIA("wins");
+	//columna= buscaIA("wins");
+	columna = winnerIA;
 	if (hayganador){
 
 		haysimula= false;
@@ -468,7 +468,7 @@ function buscaIA(opcion){
 
 				j= buscaIA("predice");
 				matriz[mifila][micola]= 0;
-				
+
 				if (!hayganador){
 					//console.log("IA knows nothing");
 					i= a+1;
@@ -504,7 +504,6 @@ function buscaIA(opcion){
 	Si está bloqueando la jugada ganadora del adversario
 	Vuelve a poner el contador de turno a su valor original
 	*/
-	//turno= (opcion=="blocks") ? ++turno : turno;
 	miturno= (opcion=="blocks") ? newturno+1 : ((opcion=="predice") ? (newturno-1) : newturno);
 
 	/*
@@ -585,4 +584,213 @@ function generaVector(numero){
 function generaNumeroAleatorio(numero){
 
 	return Math.floor(Math.random()*(numero))
+}
+
+
+/***************************************************************************/
+
+function winnerIA(){
+
+	var matriz2 = [];
+	var llena2 = [];
+
+	var i= 0;
+	var j= 0;
+	var juga, mifila, micola, a;
+
+	var miturno = newturno;
+
+	var v= generaVector(COLAMAX);
+
+	while (i<COLAMAX && !hayganador){
+
+		a= v[i];
+		matriz2 = copiaMatriz(matriz);
+		llena2 = copiaMatriz(llena);
+
+		mifila= caerFicha2(a,llena2);
+		micola= a;
+
+		if (mifila>=0){
+			juga= (miturno%2==0) ? 1 : 2;
+			matriz2[mifila][micola] = juga;
+
+			compruebaVecinos2(mifila,micola,matriz2);
+			matriz2[mifila][micola]= 0;
+		}else{
+			ayuda.text("Columna llena!");
+		}
+		i++;
+	}
+
+	miturno= newturno;
+
+	return --i;
+
+	/*var matriz2 = [];
+	var llena2 = [];
+	var f,ficha;
+	var v=generaVector(COLAMAX);
+	var i=0;
+	var miturno = newturno;
+
+	while (i<COLAMAX){
+
+		matriz2 = copiaMatriz(matriz);
+		llena2 = copiaMatriz(llena);
+
+		f = caerFicha2(v[i],llena2);
+		if (f==-1){
+			i++;
+			continue;
+		}
+		ficha = mueveFicha2(f,v[i],matriz2);
+
+		if (ficha!=1){
+			i++;
+			continue;
+		}
+
+		compruebaVecinos2(f,v[i],matriz2);
+
+		if (hayganador){
+			break;
+		}
+		i++;
+	}
+	return v[i];*/
+}
+
+function caerFicha2(micola,aux){
+
+	var mifila= aux[micola];
+	if (!haysimula){
+		aux[micola]--;
+	}
+	if (mifila>=0){
+		return mifila;
+	}else{
+		ayuda.text("Columna llena!");
+		return -1;
+	}
+}
+
+function mueveFicha2(mifila,micola,aux){
+
+	if (mifila<0 || micola<0){
+		ayuda.text("ERROR <0");
+		hayjuego= false;
+		return -1;
+	}
+
+	if (aux[mifila][micola]==0){
+		aux[mifila][micola]= newjugador;
+
+		if (newjugador==1){
+			$(fila[mifila].children[micola]).removeClass().addClass("caja rojoC");
+		}else{
+			$(fila[mifila].children[micola]).removeClass().addClass("caja amarilloC");
+		}
+
+		$(fila[mifila].children[micola]).text(newjugador);
+		ay1.text("Turno: "+newturno+". Jugador: "+newjugador);
+		ay2.text("Turno: "+(newturno+1)+". Jugador: "+(newjugador == 1 ? 2 : 1));
+
+		return 1;
+	}else{
+		ayuda.text("Celda llena!");
+		return 0;
+	}
+}
+
+function compruebaVecinos2(yfila,xcola,aux){
+
+	var i, j, paso;
+
+	if (hayjuego&&!hayganador){
+		i=0;
+		j=CONECTA-1;
+
+		while(i<CONECTA){
+			paso = (xcola-i>=0)&&(xcola+j<COLAMAX);
+			if (paso && !hayganador){
+				comprueba2(yfila, yfila, xcola-i, xcola+j,1,aux);
+			}
+			i++;
+			j--;
+		}
+	}
+
+	if (hayjuego&&!hayganador){
+		i=0;
+		j=CONECTA-1;
+		while(i<CONECTA){
+			paso = (yfila-i>=0)&&(yfila+j<FILAMAX);
+			if (paso && !hayganador){
+				comprueba2(yfila-i, yfila+j, xcola, xcola,1,aux);
+			}
+			i++;
+			j--;
+		}
+	}
+
+	if (hayjuego&&!hayganador){
+		i=0;
+		j=CONECTA-1;
+		while(i<CONECTA){
+			paso = (yfila-i>=0)&&(yfila+j<FILAMAX)&&(xcola-i>=0)&&(xcola+j<COLAMAX);
+			if (paso && !hayganador){
+				comprueba2(yfila-i, yfila+j, xcola-i, xcola+j,1,aux);
+			}
+			i++;
+			j--;
+		}
+	}
+
+	if (hayjuego&&!hayganador){
+		i=0;
+		j=CONECTA-1;
+		while(i<CONECTA){
+			paso = (yfila+i<FILAMAX)&&(yfila-j>=0)&&(xcola-i>=0)&&(xcola+j<COLAMAX);
+			if (paso && !hayganador){
+				comprueba2(yfila+i, yfila-j, xcola-i, xcola+j,0,aux);
+			}
+			i++;
+			j--;
+		}
+	}
+}
+
+function comprueba2(f1,f2,c1,c2,opcion,aux){
+
+	var celda= [];
+	var a= f1;
+	var b= c1;
+	var i= 0;
+
+	while (i<CONECTA){
+
+		celda[i]= aux[a][b];
+		b= (c1==c2) ? c1 : b+1;
+		a= (f1==f2) ? f1 : ((opcion==1) ? a+1 : a-1 );
+
+		i++;
+	}
+
+	i=0;
+	var c=0;
+	while(i<CONECTA-1){
+
+		if (celda[i]==celda[i+1]){
+			c++;
+		}
+		i++;
+	}
+
+	if (c==CONECTA-1){
+		if (!haysimula){
+			ganarJuego();
+		}
+		hayganador= true;
+	}
 }
