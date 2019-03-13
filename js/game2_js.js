@@ -93,7 +93,6 @@ function caerFicha(micola){
 	if (mifila>=0){
 		return mifila;
 	}else{
-		ayuda.text("Columna llena!");
 		return -1;
 	}
 }
@@ -125,6 +124,7 @@ function mueveFicha(mifila,micola){
 		}
 
 		$(fila[mifila].children[micola]).text(newjugador);
+		ayuda.text("Turno: "+newturno+". Jugador: "+newjugador);
 		ay1.text("Turno: "+newturno+". Jugador: "+newjugador);
 		ay2.text("Turno: "+(newturno+1)+". Jugador: "+(newjugador == 1 ? 2 : 1));
 		return 1;
@@ -323,7 +323,8 @@ function pulsaBoton(micola){
 		Si recoge -1, quiere decir q la columna está llena
 		Por tanto, sale de la función y no hace nada
 		*/
-		if ((mifila==micola) && (mifila==-1)){
+		if (mifila==-1){
+			ayuda.text("Columna llena! Elige otra!");
 			return -1;
 		}
 
@@ -371,13 +372,13 @@ function turnoIA(){
 	Aquí debe simular una jugada propia y anticipar la siguiente jugada del adversario, y elegir la opción mejor/menos mala
 	*/
 
-	ayuda.html("<b>No te flipes!!</b>");
+	//ayuda.html("<b>No te flipes!!</b>");
 
 	haysimula= true;
 	var columna;
 
-	//columna= buscaIA("wins");
-	columna = winnerIA;
+	columna= buscaIA("wins");
+	//columna = winnerIA;
 	if (hayganador){
 
 		haysimula= false;
@@ -489,9 +490,9 @@ function buscaIA(opcion){
 				*/
 				matriz[mifila][micola]= 0;
 			}
-		}else{
+		}/*else{
 			ayuda.text("Columna llena!");
-		}
+		}*/
 
 		/*
 		El contador del bucle representa la columna q estamos jugando
@@ -693,6 +694,7 @@ function mueveFicha2(mifila,micola,aux){
 		}
 
 		$(fila[mifila].children[micola]).text(newjugador);
+		ayuda.text("Turno: "+newturno+". Jugador: "+newjugador);
 		ay1.text("Turno: "+newturno+". Jugador: "+newjugador);
 		ay2.text("Turno: "+(newturno+1)+". Jugador: "+(newjugador == 1 ? 2 : 1));
 
