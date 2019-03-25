@@ -72,7 +72,6 @@ function caerFicha(micola){
 
 	/*
 	Hace caer la ficha del usuario hasta la fila más baja posible
-	(realmente sólo nos interesa qué columna ha pulsado)
 	*/
 
 	/*
@@ -515,7 +514,7 @@ function buscaIA(opcion){
 
 	/*
 	Devuelve la columna ganadora, pero ha sido incrementada en la última línea del bucle
-	La decrementa para q devolcer la verdadera columna ganadora
+	La decrementa para devolver la verdadera columna ganadora
 	*/
 	return --i;
 }
