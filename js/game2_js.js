@@ -378,7 +378,7 @@ function turnoIA(){
 	var columna;
 
 	//columna= buscaIA("wins");
-	columna = winnerIA();
+	columna = winnerIA(newturno);
 	if (hayganador){
 
 		haysimula= false;
@@ -386,7 +386,8 @@ function turnoIA(){
 		return 1;
 	}
 
-	columna= buscaIA("blocks");
+	//columna= buscaIA("blocks");
+	columna = blockerIA(newturno);
 	if (hayganador){
 
 		haysimula= false;
@@ -395,6 +396,7 @@ function turnoIA(){
 	}
 
 	columna= buscaIA("simula");
+	//columna = simulerIA(newturno);
 	haysimula= false;
 	juegaIA(columna,"simula");
 
@@ -594,7 +596,7 @@ function generaNumeroAleatorio(numero){
 
 /***************************************************************************/
 
-function winnerIA(){
+function winnerIA(trn){
 
 	var matriz2 = [];
 	var llena2 = [];
@@ -603,7 +605,7 @@ function winnerIA(){
 	var j= 0;
 	var juga, mifila, micola, a;
 
-	var miturno = newturno;
+	var miturno = trn;
 
 	var v= generaVector(COLAMAX);
 
@@ -628,7 +630,40 @@ function winnerIA(){
 		i++;
 	}
 
-	miturno= newturno;
+	return a;
+}
+
+function blockerIA(trn){
+
+	var matriz2 = [];
+	var llena2 = [];
+
+	var i= 0;
+	var j= 0;
+	var juga, mifila, micola, a;
+
+	var miturno = trn-1;
+
+	while (i<COLAMAX && !hayganador){
+
+		a= i;
+		matriz2 = copiaMatriz(matriz);
+		llena2 = copiaMatriz(llena);
+
+		mifila= caerFicha2(a,llena2);
+		micola= a;
+
+		if (mifila>=0){
+			juga= (miturno%2==0) ? 1 : 2;
+			matriz2[mifila][micola] = juga;
+
+			compruebaVecinos2(mifila,micola,matriz2);
+			matriz2[mifila][micola]= 0;
+		}else{
+			ayuda.text("Columna llena!");
+		}
+		i++;
+	}
 
 	return a;
 }
