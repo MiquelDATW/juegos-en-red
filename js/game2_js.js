@@ -377,8 +377,8 @@ function turnoIA(){
 	haysimula= true;
 	var columna;
 
-	columna= buscaIA("wins");
-	//columna = winnerIA;
+	//columna= buscaIA("wins");
+	columna = winnerIA();
 	if (hayganador){
 
 		haysimula= false;
@@ -420,6 +420,10 @@ function buscaIA(opcion){
 	*/
 	var miturno = (opcion=="blocks") ? (newturno-1) : ((opcion=="predice") ? (newturno+1) : newturno);
 
+	if (opcion=="predice"){
+		console.log("Predice");
+	}
+
 	/*
 	Si va a simular la mejor jugada, debe recorrer las 8 columnas
 	Genera un vector q contenga las 8 columnas en order aleatorio, para no ir siempre desde 0 hasta 7
@@ -451,10 +455,10 @@ function buscaIA(opcion){
 		Por tanto, no entra en la condición y no hace nada este paso del bucle
 		*/
 		if (mifila>=0){
-			if (opcion=="random"){
-				i= a+1;
-				break;
-			}
+			//if (opcion=="random"){
+			//	i= a+1;
+			//	break;
+			//}
 			/*
 			Asigna la celda al jugador está simulando q sea el turno
 			Este código es reciclado de mueveFicha(), pero no llamamos la función xq hace muchas más cosas
@@ -520,7 +524,7 @@ function juegaIA(micola,opcion){
 	Sigue los movimientos de cada jugada, como en pulsaBoton()
 	*/
 
-	var aux, mifila;
+	var mifila;
 
 	hayganador= false;
 	console.log("IA "+opcion);
@@ -626,40 +630,7 @@ function winnerIA(){
 
 	miturno= newturno;
 
-	return --i;
-
-	/*var matriz2 = [];
-	var llena2 = [];
-	var f,ficha;
-	var v=generaVector(COLAMAX);
-	var i=0;
-	var miturno = newturno;
-
-	while (i<COLAMAX){
-
-		matriz2 = copiaMatriz(matriz);
-		llena2 = copiaMatriz(llena);
-
-		f = caerFicha2(v[i],llena2);
-		if (f==-1){
-			i++;
-			continue;
-		}
-		ficha = mueveFicha2(f,v[i],matriz2);
-
-		if (ficha!=1){
-			i++;
-			continue;
-		}
-
-		compruebaVecinos2(f,v[i],matriz2);
-
-		if (hayganador){
-			break;
-		}
-		i++;
-	}
-	return v[i];*/
+	return a;
 }
 
 function caerFicha2(micola,aux){
