@@ -377,27 +377,30 @@ function turnoIA(){
 	var columna;
 
 	//columna= buscaIA("wins");
-	columna = winnerIA(newturno);
+	columna = winnerIA(newturno,matriz,llena);
 	if (hayganador){
 
 		haysimula= false;
-		juegaIA(columna,"WINS");
+		console.log(columna);
+		juegaIA(columna[0],"WINS");
 		return 1;
 	}
 
 	//columna= buscaIA("blocks");
-	columna = blockerIA(newturno);
+	columna = blockerIA(newturno,matriz,llena);
 	if (hayganador){
 
 		haysimula= false;
-		juegaIA(columna,"BLOCKS");
+		console.log(columna);
+		juegaIA(columna[0],"BLOCKS");
 		return 1;
 	}
 
-	columna= buscaIA("simula");
-	//columna = simulerIA(newturno);
+	//columna= buscaIA("simula");
+	columna = simulerIA(newturno,matriz,llena);
 	haysimula= false;
-	juegaIA(columna,"simula");
+	console.log(columna);
+	juegaIA(columna[0],"simula");
 
 	//columna= buscaIA("random");
 	//juegaIA(columna,"random");
@@ -595,24 +598,24 @@ function generaNumeroAleatorio(numero){
 
 /***************************************************************************/
 
-function winnerIA(trn){
+function winnerIA(trn,mtrz,lln){
 
 	var matriz2 = [];
 	var llena2 = [];
+	var sol = [];
 
 	var i= 0;
-	var j= 0;
-	var juga, mifila, micola, a;
+	var juga, mifila, micola, a, b;
 
 	var miturno = trn;
 
 	var v= generaVector(COLAMAX);
 
-	while (i<COLAMAX && !hayganador){
+	while (i<COLAMAX){
 
 		a= v[i];
-		matriz2 = copiaMatriz(matriz);
-		llena2 = copiaMatriz(llena);
+		matriz2 = copiaMatriz(mtrz);
+		llena2 = copiaMatriz(lln);
 
 		mifila= caerFicha2(a,llena2);
 		micola= a;
@@ -621,33 +624,39 @@ function winnerIA(trn){
 			juga= (miturno%2==0) ? 1 : 2;
 			matriz2[mifila][micola] = juga;
 
-			compruebaVecinos2(mifila,micola,matriz2);
+			b= compruebaVecinos2(mifila,micola,matriz2);
+			if (b!=-1){
+				sol.push(b);
+			}
 			matriz2[mifila][micola]= 0;
 		}else{
 			ayuda.text("Columna llena!");
 		}
 		i++;
 	}
+	hayganador = (sol.length>0);
 
-	return a;
+	return sol;
 }
 
-function blockerIA(trn){
+function blockerIA(trn,mtrz,lln){
 
 	var matriz2 = [];
 	var llena2 = [];
+	var sol = [];
 
 	var i= 0;
-	var j= 0;
-	var juga, mifila, micola, a;
+	var juga, mifila, micola, a, b;
 
-	var miturno = trn-1;
+	var miturno = trn+1;
 
-	while (i<COLAMAX && !hayganador){
+	var v= generaVector(COLAMAX);
 
-		a= i;
-		matriz2 = copiaMatriz(matriz);
-		llena2 = copiaMatriz(llena);
+	while (i<COLAMAX){
+
+		a= v[i];
+		matriz2 = copiaMatriz(mtrz);
+		llena2 = copiaMatriz(lln);
 
 		mifila= caerFicha2(a,llena2);
 		micola= a;
@@ -656,7 +665,61 @@ function blockerIA(trn){
 			juga= (miturno%2==0) ? 1 : 2;
 			matriz2[mifila][micola] = juga;
 
-			compruebaVecinos2(mifila,micola,matriz2);
+			b= compruebaVecinos2(mifila,micola,matriz2);
+			if (b!=-1){
+				sol.push(b);
+			}
+			matriz2[mifila][micola]= 0;
+		}else{
+			ayuda.text("Columna llena!");
+		}
+		i++;
+	}
+	hayganador = (sol.length>0);
+
+	return sol;
+}
+
+function simulerIA(trn,mtrz,lln){
+
+	var matriz2 = [];
+	var llena2 = [];
+	var sol = [];
+
+	var i= 0;
+	var juga, mifila, micola, a, b;
+	var col;
+
+	var miturno = trn;
+
+	var v= generaVector(COLAMAX);
+
+	while (i<COLAMAX){
+
+		a= v[i];
+		matriz2 = copiaMatriz(mtrz);
+		llena2 = copiaMatriz(lln);
+
+		mifila= caerFicha2(a,llena2);
+		micola= a;
+
+		if (mifila>=0){
+			llena2[a]--;
+			juga= (miturno%2==0) ? 1 : 2;
+			matriz2[mifila][micola] = juga;
+
+			b= compruebaVecinos2(mifila,micola,matriz2);
+			if (b!=-1){
+				console.log("Error!");
+			}
+			col= blockerIA(miturno,matriz2,llena2);
+			if (hayganador){
+				hayganador= false;
+				console.log(col);
+			}else{
+				sol.push(micola);
+			}
+
 			matriz2[mifila][micola]= 0;
 		}else{
 			ayuda.text("Columna llena!");
@@ -664,7 +727,7 @@ function blockerIA(trn){
 		i++;
 	}
 
-	return a;
+	return (sol.length==0) ? v : sol;
 }
 
 function caerFicha2(micola,aux){
@@ -713,63 +776,67 @@ function mueveFicha2(mifila,micola,aux){
 function compruebaVecinos2(yfila,xcola,aux){
 
 	var i, j, paso;
+	var haysol= false;
 
-	if (hayjuego&&!hayganador){
+	if (hayjuego&&!haysol){
 		i=0;
 		j=CONECTA-1;
 
 		while(i<CONECTA){
 			paso = (xcola-i>=0)&&(xcola+j<COLAMAX);
-			if (paso && !hayganador){
-				comprueba2(yfila, yfila, xcola-i, xcola+j,1,aux);
+			if (paso && !haysol){
+				haysol = comprueba2(yfila, yfila, xcola-i, xcola+j,1,aux);
 			}
 			i++;
 			j--;
 		}
 	}
 
-	if (hayjuego&&!hayganador){
+	if (hayjuego&&!haysol){
 		i=0;
 		j=CONECTA-1;
 		while(i<CONECTA){
 			paso = (yfila-i>=0)&&(yfila+j<FILAMAX);
-			if (paso && !hayganador){
-				comprueba2(yfila-i, yfila+j, xcola, xcola,1,aux);
+			if (paso && !haysol){
+				haysol = comprueba2(yfila-i, yfila+j, xcola, xcola,1,aux);
 			}
 			i++;
 			j--;
 		}
 	}
 
-	if (hayjuego&&!hayganador){
+	if (hayjuego&&!haysol){
 		i=0;
 		j=CONECTA-1;
 		while(i<CONECTA){
 			paso = (yfila-i>=0)&&(yfila+j<FILAMAX)&&(xcola-i>=0)&&(xcola+j<COLAMAX);
-			if (paso && !hayganador){
-				comprueba2(yfila-i, yfila+j, xcola-i, xcola+j,1,aux);
+			if (paso && !haysol){
+				haysol = comprueba2(yfila-i, yfila+j, xcola-i, xcola+j,1,aux);
 			}
 			i++;
 			j--;
 		}
 	}
 
-	if (hayjuego&&!hayganador){
+	if (hayjuego&&!haysol){
 		i=0;
 		j=CONECTA-1;
 		while(i<CONECTA){
 			paso = (yfila+i<FILAMAX)&&(yfila-j>=0)&&(xcola-i>=0)&&(xcola+j<COLAMAX);
-			if (paso && !hayganador){
-				comprueba2(yfila+i, yfila-j, xcola-i, xcola+j,0,aux);
+			if (paso && !haysol){
+				haysol = comprueba2(yfila+i, yfila-j, xcola-i, xcola+j,0,aux);
 			}
 			i++;
 			j--;
 		}
 	}
+
+	return (!haysol) ? -1 : xcola;
 }
 
 function comprueba2(f1,f2,c1,c2,opcion,aux){
 
+	var haysol = false;
 	var celda= [];
 	var a= f1;
 	var b= c1;
@@ -798,6 +865,9 @@ function comprueba2(f1,f2,c1,c2,opcion,aux){
 		if (!haysimula){
 			ganarJuego();
 		}
-		hayganador= true;
+		//hayganador= true;
+		haysol = true;
 	}
+
+	return haysol;
 }
