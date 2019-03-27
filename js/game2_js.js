@@ -597,47 +597,6 @@ function generaNumeroAleatorio(numero){
 
 /***************************************************************************/
 
-function winnerIA(paso,trn,mtrz,lln){
-
-	var matriz2 = [];
-	var llena2 = [];
-	var sol = [];
-
-	var i= 0;
-	var juga, mifila, micola, a, b;
-
-	var miturno = trn+paso;
-
-	var v= generaVector(COLAMAX);
-
-	while (i<COLAMAX){
-
-		a= v[i];
-		matriz2 = copiaMatriz(mtrz);
-		llena2 = copiaMatriz(lln);
-
-		mifila= caerFicha2(a,llena2);
-		micola= a;
-
-		if (mifila>=0){
-			juga= (miturno%2==0) ? 1 : 2;
-			matriz2[mifila][micola] = juga;
-
-			b= compruebaVecinos2(mifila,micola,matriz2);
-			if (b!=-1){
-				sol.push(b);
-			}
-			matriz2[mifila][micola]= 0;
-		}else{
-			ayuda.text("Columna llena!");
-		}
-		i++;
-	}
-	hayganador = (sol.length>0);
-
-	return sol;
-}
-
 function simulerIA(paso,trn,mtrz,lln,sim){
 
 	var matriz2 = [];
