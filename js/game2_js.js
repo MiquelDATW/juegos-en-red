@@ -377,7 +377,7 @@ function turnoIA(){
 	var columna;
 
 	//columna= buscaIA("wins");
-	columna = winnerIA(newturno,matriz,llena);
+	columna = simulerIA(0,newturno,matriz,llena,false);
 	if (hayganador){
 
 		haysimula= false;
@@ -387,7 +387,7 @@ function turnoIA(){
 	}
 
 	//columna= buscaIA("blocks");
-	columna = blockerIA(newturno,matriz,llena);
+	columna = simulerIA(1,newturno,matriz,llena,false);
 	if (hayganador){
 
 		haysimula= false;
@@ -397,7 +397,7 @@ function turnoIA(){
 	}
 
 	//columna= buscaIA("simula");
-	columna = simulerIA(newturno,matriz,llena);
+	columna = simulerIA(0,newturno,matriz,llena,true);
 	haysimula= false;
 	console.log(columna);
 	juegaIA(columna[0],"simula");
@@ -595,10 +595,9 @@ function generaNumeroAleatorio(numero){
 	return Math.floor(Math.random()*(numero))
 }
 
-
 /***************************************************************************/
 
-function winnerIA(trn,mtrz,lln){
+function winnerIA(paso,trn,mtrz,lln){
 
 	var matriz2 = [];
 	var llena2 = [];
@@ -607,7 +606,7 @@ function winnerIA(trn,mtrz,lln){
 	var i= 0;
 	var juga, mifila, micola, a, b;
 
-	var miturno = trn;
+	var miturno = trn+paso;
 
 	var v= generaVector(COLAMAX);
 
@@ -639,48 +638,7 @@ function winnerIA(trn,mtrz,lln){
 	return sol;
 }
 
-function blockerIA(trn,mtrz,lln){
-
-	var matriz2 = [];
-	var llena2 = [];
-	var sol = [];
-
-	var i= 0;
-	var juga, mifila, micola, a, b;
-
-	var miturno = trn+1;
-
-	var v= generaVector(COLAMAX);
-
-	while (i<COLAMAX){
-
-		a= v[i];
-		matriz2 = copiaMatriz(mtrz);
-		llena2 = copiaMatriz(lln);
-
-		mifila= caerFicha2(a,llena2);
-		micola= a;
-
-		if (mifila>=0){
-			juga= (miturno%2==0) ? 1 : 2;
-			matriz2[mifila][micola] = juga;
-
-			b= compruebaVecinos2(mifila,micola,matriz2);
-			if (b!=-1){
-				sol.push(b);
-			}
-			matriz2[mifila][micola]= 0;
-		}else{
-			ayuda.text("Columna llena!");
-		}
-		i++;
-	}
-	hayganador = (sol.length>0);
-
-	return sol;
-}
-
-function simulerIA(trn,mtrz,lln){
+function simulerIA(paso,trn,mtrz,lln,sim){
 
 	var matriz2 = [];
 	var llena2 = [];
@@ -690,7 +648,7 @@ function simulerIA(trn,mtrz,lln){
 	var juga, mifila, micola, a, b;
 	var col;
 
-	var miturno = trn;
+	var miturno = trn+paso;
 
 	var v= generaVector(COLAMAX);
 
@@ -709,15 +667,20 @@ function simulerIA(trn,mtrz,lln){
 			matriz2[mifila][micola] = juga;
 
 			b= compruebaVecinos2(mifila,micola,matriz2);
-			if (b!=-1){
+			if (b!=-1 && !sim){
+				sol.push(b);
+			}
+			if (b!=-1 && sim){
 				console.log("Error!");
 			}
-			col= blockerIA(miturno,matriz2,llena2);
-			if (hayganador){
-				hayganador= false;
-				console.log(col);
-			}else{
-				sol.push(micola);
+			if (sim){
+				col= simulerIA(1,miturno,matriz2,llena2,false);
+				if (hayganador){
+					hayganador= false;
+					console.log(col);
+				}else{
+					sol.push(micola);
+				}
 			}
 
 			matriz2[mifila][micola]= 0;
