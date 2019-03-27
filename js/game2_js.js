@@ -119,7 +119,7 @@ function mueveFicha(mifila,micola){
 		if (newjugador==1){
 			$(fila[mifila].children[micola]).removeClass().addClass("caja rojoC");
 		}else{
-			$(fila[mifila].children[micola]).removeClass().addClass("caja amarilloC");
+			$(fila[mifila].children[micola]).removeClass().addClass("caja negroC");
 		}
 
 		$(fila[mifila].children[micola]).text(newjugador);
@@ -316,7 +316,8 @@ function pulsaBoton(micola){
 		/*
 		Hace caer la ficha del usuario hasta la fila más baja posible
 		*/
-		var mifila= caerFicha(micola);
+		//var mifila= caerFicha(micola);
+		var mifila= caerFicha2(micola,0);
 
 		/*
 		Si recoge -1, quiere decir q la columna está llena
@@ -330,6 +331,7 @@ function pulsaBoton(micola){
 		/*
 		Pinta la jugada, actualiza la matriz de jugadas y avanza el turno
 		*/
+		llena[micola]--;
 		newturno++;
 		var ficha = mueveFicha(mifila,micola);
 
@@ -338,7 +340,7 @@ function pulsaBoton(micola){
 		Si las hay, llama a la función ganarJuego(), que hace hayjuego= false
 		*/
 		if (ficha==1){
-			compruebaVecinos(mifila,micola);
+			compruebaVecinos2(mifila,micola,0);
 			/*
 			Si está jugando contra la máquina, inicia el turno de la IA
 			*/
@@ -347,7 +349,6 @@ function pulsaBoton(micola){
 				setTimeout(turnoIA, 250);
 			}
 		}
-
 
 		/*
 		Si no se ha ganado el juego, comprueba si se ha llenado el tablero
@@ -371,13 +372,10 @@ function turnoIA(){
 	Aquí debe simular una jugada propia y anticipar la siguiente jugada del adversario, y elegir la opción mejor/menos mala
 	*/
 
-	//ayuda.html("<b>No te flipes!!</b>");
-
 	haysimula= true;
 	var columna;
 
-	//columna= buscaIA("wins");
-	columna = simulerIA(0,newturno,matriz,llena,false);
+	columna = buscaIA(0,newturno,matriz,llena,false);
 	if (hayganador){
 
 		haysimula= false;
@@ -386,8 +384,7 @@ function turnoIA(){
 		return 1;
 	}
 
-	//columna= buscaIA("blocks");
-	columna = simulerIA(1,newturno,matriz,llena,false);
+	columna = buscaIA(1,newturno,matriz,llena,false);
 	if (hayganador){
 
 		haysimula= false;
@@ -396,130 +393,10 @@ function turnoIA(){
 		return 1;
 	}
 
-	//columna= buscaIA("simula");
-	columna = simulerIA(0,newturno,matriz,llena,true);
+	columna = buscaIA(0,newturno,matriz,llena,true);
 	haysimula= false;
 	console.log(columna);
 	juegaIA(columna[0],"simula");
-
-	//columna= buscaIA("random");
-	//juegaIA(columna,"random");
-}
-
-function buscaIA(opcion){
-
-	/*
-	Busca la columna q consigue el objetivo del "estado"
-	1. ganar la partida, 2. bloquear el adversario y 3. simular su propia siguiente jugada
-	Llama caerFicha(), código adaptado de mueveFicha() y compruebaVecinos()
-	*/
-
-	var i= 0;
-	var j= 0;
-	var juga, mifila, micola, a;
-
-	/*
-	Si está bloqueando la jugada ganadora del adversario
-	Disminuye el contador de turno, para simular q es el otro
-	*/
-	var miturno = (opcion=="blocks") ? (newturno-1) : ((opcion=="predice") ? (newturno+1) : newturno);
-
-	if (opcion=="predice"){
-		console.log("Predice");
-	}
-
-	/*
-	Si va a simular la mejor jugada, debe recorrer las 8 columnas
-	Genera un vector q contenga las 8 columnas en order aleatorio, para no ir siempre desde 0 hasta 7
-	*/
-	if (opcion=="simula"){
-		var v= generaVector(COLAMAX);
-	}
-
-	/*
-	Recorre las 8 columnas hasta q encuentre la columna q gana/bloquea
-	O hasta q haya acabado de el bucle
-	*/
-	while (i<COLAMAX && !hayganador){
-
-		/*
-		Si va a simular la mejor jugada, usa el vector aleatorio, sino recorre las columnas de 0 a 7
-		*/
-		a= (opcion=="simula") ? v[i] : i;
-		a= (opcion=="random") ? generaNumeroAleatorio(COLAMAX) : a;
-
-		/*
-		Hace caer la ficha del usuario hasta la fila más baja posible
-		*/
-		mifila= caerFicha(a);
-		micola= a;
-
-		/*
-		Si recoge -1, quiere decir q la columna está llena
-		Por tanto, no entra en la condición y no hace nada este paso del bucle
-		*/
-		if (mifila>=0){
-			//if (opcion=="random"){
-			//	i= a+1;
-			//	break;
-			//}
-			/*
-			Asigna la celda al jugador está simulando q sea el turno
-			Este código es reciclado de mueveFicha(), pero no llamamos la función xq hace muchas más cosas
-			Que no nos interesan xq estamos simulando jugadas
-			*/
-			juga= (miturno%2==0) ? 1 : 2;
-			matriz[mifila][micola] = juga;
-			/*
-			TODO: aún no funciona
-			*/
-			if (opcion=="simula"){
-
-				j= buscaIA("predice");
-				matriz[mifila][micola]= 0;
-
-				if (!hayganador){
-					//console.log("IA knows nothing");
-					i= a+1;
-					break;
-				}else{
-					//console.log("IA predicts win: "+j);
-				}
-			}else{
-				/*
-				Si está en 1. ganar la partida o 2. bloquear el adversario
-				Comprueba si hay N fichas en línea de un mismo color
-				Si las hay, llama a la función ganarJuego(), que hace hayganador= true
-				Que hará no volver a entrar al bucle
-				*/
-				compruebaVecinos(mifila,micola);
-				/*
-				Reasigna la celda a 0, haciéndola vacía de nuevo
-				*/
-				matriz[mifila][micola]= 0;
-			}
-		}/*else{
-			ayuda.text("Columna llena!");
-		}*/
-
-		/*
-		El contador del bucle representa la columna q estamos jugando
-		Si ha hecho hayganador= true, saldrá del bucle, pero aún aumentará i
-		*/
-		i++;
-	}
-
-	/*
-	Si está bloqueando la jugada ganadora del adversario
-	Vuelve a poner el contador de turno a su valor original
-	*/
-	miturno= (opcion=="blocks") ? newturno+1 : ((opcion=="predice") ? (newturno-1) : newturno);
-
-	/*
-	Devuelve la columna ganadora, pero ha sido incrementada en la última línea del bucle
-	La decrementa para devolver la verdadera columna ganadora
-	*/
-	return --i;
 }
 
 function juegaIA(micola,opcion){
@@ -597,7 +474,13 @@ function generaNumeroAleatorio(numero){
 
 /***************************************************************************/
 
-function simulerIA(paso,trn,mtrz,lln,sim){
+function buscaIA(paso,trn,mtrz,lln,sim){
+
+	/*
+	Busca la columna q consigue el objetivo del "estado"
+	1. ganar la partida, 2. bloquear el adversario y 3. simular su propia siguiente jugada
+	Llama caerFicha(), código adaptado de mueveFicha() y compruebaVecinos()
+	*/
 
 	var matriz2 = [];
 	var llena2 = [];
@@ -607,32 +490,67 @@ function simulerIA(paso,trn,mtrz,lln,sim){
 	var juga, mifila, micola, a, b;
 	var col;
 
+	/*
+	Si está bloqueando la jugada ganadora del adversario
+	Aumenta el contador de turno, para simular q es el otro
+	*/
 	var miturno = trn+paso;
 
+	/*
+	Genera un vector q contenga las 8 columnas en order aleatorio, para no ir siempre desde 0 hasta 7
+	*/
 	var v= generaVector(COLAMAX);
 
 	while (i<COLAMAX){
 
+		/*
+		Recorre las 8 columnas hasta q encuentre la columna q gana/bloquea
+		O hasta q haya acabado de el bucle
+		*/
 		a= v[i];
 		matriz2 = copiaMatriz(mtrz);
 		llena2 = copiaMatriz(lln);
 
+		/*
+		Hace caer la ficha del usuario hasta la fila más baja posible
+		*/
 		mifila= caerFicha2(a,llena2);
 		micola= a;
 
+		/*
+		Si recoge -1, quiere decir q la columna está llena
+		Por tanto, no entra en la condición y no hace nada este paso del bucle
+		*/
 		if (mifila>=0){
-			llena2[a]--;
+
+			/*
+			Asigna la celda al jugador está simulando q sea el turno
+			*/
 			juga= (miturno%2==0) ? 1 : 2;
 			matriz2[mifila][micola] = juga;
 
+			/*
+			Comprueba si hay N fichas en línea de un mismo color
+			Devuelve -1 si no hay N fichas en linea o la columna que consigue las N fichas
+			Si está en 1. ganar la partida o 2. bloquear el adversario -> sim = false
+			Si esta en 3. simular siguiente mejor jugada -> sim = true
+			*/
 			b= compruebaVecinos2(mifila,micola,matriz2);
+
+			/*
+			Si hay éxito b!=-1, añado la columna a vector de soluciones
+			*/
 			if (b!=-1 && !sim){
-				console.log(sim);
 				sol.push(b);
 			}
+			/*
+			Vuelvo a llamar a buscaIA recursivamente para ahora simular el adversario
+			Si el adversario ganara, pondría hayganador= true,
+			Entonces no incluyo esa columna en el vector de soluciones
+			*/
 			if (b==-1 && sim){
-				console.log(sim);
-				col= simulerIA(1,miturno,matriz2,llena2,false);
+				llena2[a]--;
+				col= buscaIA(1,miturno,matriz2,llena2,false);
 				if (hayganador){
 					hayganador= false;
 					console.log(col);
@@ -655,10 +573,11 @@ function simulerIA(paso,trn,mtrz,lln,sim){
 
 function caerFicha2(micola,aux){
 
-	var mifila= aux[micola];
-	if (!haysimula){
-		aux[micola]--;
+	if (aux===0){
+		aux = llena;
 	}
+
+	var mifila= aux[micola];
 	if (mifila>=0){
 		return mifila;
 	}else{
@@ -681,7 +600,7 @@ function mueveFicha2(mifila,micola,aux){
 		if (newjugador==1){
 			$(fila[mifila].children[micola]).removeClass().addClass("caja rojoC");
 		}else{
-			$(fila[mifila].children[micola]).removeClass().addClass("caja amarilloC");
+			$(fila[mifila].children[micola]).removeClass().addClass("caja negroC");
 		}
 
 		$(fila[mifila].children[micola]).text(newjugador);
@@ -697,6 +616,10 @@ function mueveFicha2(mifila,micola,aux){
 }
 
 function compruebaVecinos2(yfila,xcola,aux){
+
+	if (aux===0){
+		aux = matriz;
+	}
 
 	var i, j, paso;
 	var haysol= false;
@@ -758,6 +681,10 @@ function compruebaVecinos2(yfila,xcola,aux){
 }
 
 function comprueba2(f1,f2,c1,c2,opcion,aux){
+
+	if (aux===0){
+		aux = matriz;
+	}
 
 	var haysol = false;
 	var celda= [];
