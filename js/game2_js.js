@@ -627,12 +627,11 @@ function simulerIA(paso,trn,mtrz,lln,sim){
 
 			b= compruebaVecinos2(mifila,micola,matriz2);
 			if (b!=-1 && !sim){
+				console.log(sim);
 				sol.push(b);
 			}
-			if (b!=-1 && sim){
-				console.log("Error!");
-			}
-			if (sim){
+			if (b==-1 && sim){
+				console.log(sim);
 				col= simulerIA(1,miturno,matriz2,llena2,false);
 				if (hayganador){
 					hayganador= false;
@@ -648,6 +647,8 @@ function simulerIA(paso,trn,mtrz,lln,sim){
 		}
 		i++;
 	}
+
+	hayganador = (sol.length>0 && !sim);
 
 	return (sol.length==0) ? v : sol;
 }
