@@ -5,129 +5,148 @@
 	<meta name="author" content="Miquel March">
 	<meta name="description" content="Juego Javascript">
 	<title>Conecta 4 JavaScript</title>
+	<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
 	<link type="text/css" rel="stylesheet" href="css/game2_css.css">
 	<script type="text/javascript" src="js/game2_const.js"></script>
 	<script type="text/javascript" src="js/game2_js.js"></script>
 </head>
 <body>
-	<div id="maincontent">
-		<div id="juego">
-			<div>
-				<div class="boton" onclick="pulsaBoton(0)"></div>
-				<div class="boton" onclick="pulsaBoton(1)"></div>
-				<div class="boton" onclick="pulsaBoton(2)"></div>
-				<div class="boton" onclick="pulsaBoton(3)"></div>
-				<div class="boton" onclick="pulsaBoton(4)"></div>
-				<div class="boton" onclick="pulsaBoton(5)"></div>
-				<div class="boton" onclick="pulsaBoton(6)"></div>
-				<div class="boton" onclick="pulsaBoton(7)"></div>
+	<div class="container-fluid" id="maincontent">
+		<div class="row">
+			<div class="col-sm-3">
+				<div style="position:relative;color:red;margin-left:15px;">
+					<h4>Jugador 1</h4>
+					<div style="height:150px;overflow-y:auto;position:relative;height:350px;">
+						<div id="ayj1">
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="fila">
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
+			<div class="col-sm-6">
+				<div id="juego">
+					<div>
+						<div class="boton" onclick="pulsaBoton(0)"></div>
+						<div class="boton" onclick="pulsaBoton(1)"></div>
+						<div class="boton" onclick="pulsaBoton(2)"></div>
+						<div class="boton" onclick="pulsaBoton(3)"></div>
+						<div class="boton" onclick="pulsaBoton(4)"></div>
+						<div class="boton" onclick="pulsaBoton(5)"></div>
+						<div class="boton" onclick="pulsaBoton(6)"></div>
+						<div class="boton" onclick="pulsaBoton(7)"></div>
+					</div>
+					<div class="fila">
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+					</div>
+					<div class="fila">
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+					</div>
+					<div class="fila">
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+					</div>
+					<div class="fila">
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+					</div>
+					<div class="fila">
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+					</div>
+					<div class="fila">
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+					</div>
+					<div class="fila">
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+					</div>
+					<div class="fila">
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+						<div class="caja"></div>
+					</div>
+				</div>
 			</div>
-			<div class="fila">
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-			</div>
-			<div class="fila">
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-			</div>
-			<div class="fila">
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-			</div>
-			<div class="fila">
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-			</div>
-			<div class="fila">
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-			</div>
-			<div class="fila">
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-			</div>
-			<div class="fila">
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
-				<div class="caja"></div>
+			<div class="col-sm-3">
+				<div style="position:relative;color:blue;">
+					<h4>Jugador 2</h4>
+					<div style="height:150px;overflow-y:auto;position:relative;height:350px;">
+						<div id="ayj2">
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div id="controles">
-			<!--<button class="button" id="b0" onclick="generaMatriz()">Comienza juego</button>-->
-			<button class="button" id="b1" onclick="resetJuego()">Comenzar juego</button>
-			<!--<button class="button" id="b2" onclick="iniciaIA()">Autopartida</button>-->
+			<button type="button" class="btn btn-info" id="b1" onclick="resetJuego()">Comenzar juego</button>
 		</div>
 		<div id="opciones">
 			<form>
-				<!--<div><input type="radio" name="jugadores" id="opcion0">0 Jugadores</div>-->
 				<div><input type="radio" name="jugadores" id="opcion1" checked>1 Jugador</div>
 				<div><input type="radio" name="jugadores" id="opcion2">2 Jugadores</div>
 			</form>
 		</div>
-		<div>
-			<p id="ayuda"></p>
-			<p><b><span id="ay1"></span></b> / Siguiente turno: <span id="ay2"></span></p>
+		<div id="ayuda">
+			<p id="ay0"></p>
 		</div>
 	</div>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
 	<script type="text/javascript">
 
-		var ay1 = $('#ay1');
-		var ay2 = $('#ay2');
-		var ayuda = $('#ayuda');
+		var ayj1 = $('#ayj1');
+		var ayj2 = $('#ayj2');
+		var ay0 = $('#ay0');
 		var fila = $('.fila');
-		//generaMatriz();
 
 	</script>
 </body>

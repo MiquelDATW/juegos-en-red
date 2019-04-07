@@ -1,21 +1,16 @@
 #maincontent{
 	border: 1px solid black;
 	width: 1000px;
-	height: 450px;
+	height: 500px;
 	margin: 0 auto;
 	padding: 5px;
-}
-
-h1, p{
-	margin: 10 auto;
-	padding-left: 50px;
 }
 
 #juego{
 	border: 1px solid grey;
 	margin: 0 auto;
-	height: 360px;
-	width: 320px;
+	height: 351px;
+	width: 314px;
 }
 
 #controles{
@@ -40,12 +35,14 @@ h1, p{
 	float: left;
 }
 
+#ayuda{
+	padding-left: 50px;
+}
 
 .caja{
 	height: 39px;
 	width: 39px;
-	border-top: 1px dashed lightgrey;
-	border-right: 1px dashed lightgrey;
+	border: 1px dashed lightgrey;
 	float: left;
 }
 
@@ -53,18 +50,14 @@ h1, p{
 	background-color: red;
 }
 
-.negroC{
-	background-color: black;
-}
-
-.amarilloC{
-	background-color: yellow;
+.azulC{
+	background-color: blue;
 }
 
 .boton{
-	background-color: blue;
-	height: 36px;
-	width: 36px;
-	border: 2px solid lightblue;
+	background-color: black;
+	height: 39px;
+	width: 39px;
+	border: 2px solid grey;
 	float: left;
 }
