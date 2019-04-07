@@ -5,12 +5,13 @@
 	<meta name="author" content="Miquel March">
 	<meta name="description" content="Juego Javascript">
 	<title>Conecta 4 JavaScript</title>
+	<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
 	<link type="text/css" rel="stylesheet" href="css/game2_css.css">
 	<script type="text/javascript" src="js/game2_const.js"></script>
 	<script type="text/javascript" src="js/game2_js.js"></script>
 </head>
 <body>
-	<div id="maincontent">
+	<div class="container-fluid">
 		<div id="juego">
 			<div>
 				<div class="boton" onclick="pulsaBoton(0)"></div>
@@ -103,24 +104,22 @@
 				<div class="caja"></div>
 			</div>
 		</div>
-		<div id="controles">
-			<!--<button class="button" id="b0" onclick="generaMatriz()">Comienza juego</button>-->
+		<div>
 			<button class="button" id="b1" onclick="resetJuego()">Comenzar juego</button>
-			<!--<button class="button" id="b2" onclick="iniciaIA()">Autopartida</button>-->
 		</div>
-		<div id="opciones">
+		<div>
 			<form>
-				<!--<div><input type="radio" name="jugadores" id="opcion0">0 Jugadores</div>-->
 				<div><input type="radio" name="jugadores" id="opcion1" checked>1 Jugador</div>
 				<div><input type="radio" name="jugadores" id="opcion2">2 Jugadores</div>
 			</form>
 		</div>
 		<div>
-			<p id="ayuda"></p>
-			<p><b><span id="ay1"></span></b> / Siguiente turno: <span id="ay2"></span></p>
+			<div id="ayuda"></div>
+			<div><b><span id="ay1"></span></b> / Siguiente turno: <span id="ay2"></span></div>
 		</div>
 	</div>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
 	<script type="text/javascript">
 
 		var ay1 = $('#ay1');
